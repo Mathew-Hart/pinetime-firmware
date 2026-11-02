@@ -9,14 +9,12 @@ using namespace Pinetime::Drivers;
 namespace {
   int8_t user_i2c_read(uint8_t reg_addr, uint8_t* reg_data, uint32_t length, void* intf_ptr) {
     auto bma421 = static_cast<Bma421*>(intf_ptr);
-    bma421->Read(reg_addr, reg_data, length);
-    return 0;
+    return bma421->Read(reg_addr, reg_data, length) ? 0 : -1;
   }
 
   int8_t user_i2c_write(uint8_t reg_addr, const uint8_t* reg_data, uint32_t length, void* intf_ptr) {
     auto bma421 = static_cast<Bma421*>(intf_ptr);
-    bma421->Write(reg_addr, reg_data, length);
-    return 0;
+    return bma421->Write(reg_addr, reg_data, length) ? 0 : -1;
   }
 
   void user_delay(uint32_t period_us, void* /*intf_ptr*/) {
@@ -45,6 +43,8 @@ Bma421::Bma421(TwiMaster& twiMaster, uint8_t twiAddress) : twiMaster {twiMaster}
 }
 
 void Bma421::Init() {
+  isOk = false;
+  deviceType = DeviceTypes::Unknown;
   if (not isResetOk)
     return; // Call SoftReset (and reset TWI device) first!
 
@@ -100,12 +100,12 @@ void Bma421::Reset() {
   twiMaster.Write(deviceAddress, 0x7E, &data, 1);
 }
 
-void Bma421::Read(uint8_t registerAddress, uint8_t* buffer, size_t size) {
-  twiMaster.Read(deviceAddress, registerAddress, buffer, size);
+bool Bma421::Read(uint8_t registerAddress, uint8_t* buffer, size_t size) {
+  return twiMaster.Read(deviceAddress, registerAddress, buffer, size) == TwiMaster::ErrorCodes::NoError;
 }
 
-void Bma421::Write(uint8_t registerAddress, const uint8_t* data, size_t size) {
-  twiMaster.Write(deviceAddress, registerAddress, data, size);
+bool Bma421::Write(uint8_t registerAddress, const uint8_t* data, size_t size) {
+  return twiMaster.Write(deviceAddress, registerAddress, data, size) == TwiMaster::ErrorCodes::NoError;
 }
 
 Bma421::Values Bma421::Process() {
@@ -113,7 +113,9 @@ Bma421::Values Bma421::Process() {
     return {};
   struct bma4_accel rawData;
   struct bma4_accel data;
-  bma4_read_accel_xyz(&rawData, &bma);
+  if (bma4_read_accel_xyz(&rawData, &bma) != BMA4_OK) {
+    return {};
+  }
 
   // Scale the measured ADC counts to units of 'binary milli-g'
   // where 1g = 1024 'binary milli-g' units.
@@ -139,6 +141,8 @@ void Bma421::ResetStepCounter() {
 }
 
 void Bma421::SoftReset() {
+  isResetOk = false;
+  isOk = false;
   auto ret = bma4_soft_reset(&bma);
   if (ret == BMA4_OK) {
     isResetOk = true;

@@ -1,0 +1,18 @@
+[Unit]
+Description=Forward existing phone GNSS reports to PineTime
+PartOf=graphical-session.target
+After=graphical-session-pre.target pinetime-watchmate.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=-%h/.config/pinetime-gps-bridge.conf
+ExecStart=/usr/bin/python3 %h/.local/libexec/pinetime-gps-bridge.py --status-file %h/.cache/pinetime-gps-bridge-status.json
+Restart=on-failure
+RestartPreventExitStatus=2
+RestartSec=10
+TimeoutStopSec=10
+
+[Install]
+WantedBy=graphical-session.target

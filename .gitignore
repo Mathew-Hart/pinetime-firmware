@@ -55,3 +55,23 @@ src/arm-none-eabi
 node_modules
 package.json
 package-lock.json
+
+# Publication: local tools, native outputs, and downloaded asset caches.
+/.deps/
+/codex/deps/
+/codex/**/build/
+/codex/**/output/
+/codex/**/*.log
+/codex/**/__pycache__/
+/codex/**/*.py[cod]
+/codex/**/.pytest_cache/
+/codex/**/.cache/
+/codex/assets/earth/land_ocean_ice_cloud_2048.jpg
+/codex/assets/earth/earth-projected.png
+/codex/assets/earth/earth-indexed.png
+
+# Keep publication helpers and reproducible npm inputs despite upstream rules.
+!/codex/tools/
+!/codex/tools/**
+!/codex/tooling/package.json
+!/codex/tooling/package-lock.json

@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "cases": [
+    "three_d_golden",
+    "unknown_no_data",
+    "unknown_dimension_position",
+    "two_d_south_east",
+    "no_fix_reported_satellites",
+    "three_d_below_sea_level"
+  ],
+  "cross_language_cases": 6,
+  "actual_python_encoder_and_cpp_decoder": true,
+  "sanitizers": [
+    "ASan",
+    "UBSan"
+  ],
+  "source_sha256": {
+    "src/components/ble/GpsData.h": "e23875e1355188803ce19309a4291c4ed9c13d4da186b1d3687a5d8dca3a10fb",
+    "codex/companion/gps_bridge.py": "531162bc6adf9aef872f6709ea3a60ad4e707427f2fc0168866b11911d41b7f4",
+    "codex/companion/protocol-fixtures.json": "48516344ac26b46b2d2ea165f3493e1f13a4dc1f44617dc7faad8887151b6661",
+    "codex/tests/protocol-roundtrip/decode.cpp": "d2fb0daff685ffa9be5ce1f76b427a59fafb9b8e0d931d5d4f795c9fbe3bffa3",
+    "codex/tests/protocol-roundtrip/verify.py": "3b68975ad075700e721a9be9ce5b8bda021dc1de12349e068a96fb6307d7cccb"
+  },
+  "uploaded": false,
+  "phone_actions": []
+}

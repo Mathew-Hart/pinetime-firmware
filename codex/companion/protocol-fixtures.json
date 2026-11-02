@@ -1,0 +1,98 @@
+{
+  "protocol": "GPS v1",
+  "all_examples_synthetic": true,
+  "packet_bytes": 20,
+  "format": "<BBBBBBHiihH",
+  "cases": [
+    {
+      "name": "three_d_golden",
+      "sample": {
+        "fix": 3,
+        "age": 2,
+        "latitude": 37.3861,
+        "longitude": -122.0839,
+        "altitude": 12,
+        "used": 8,
+        "in_view": 12,
+        "hdop": 0.9,
+        "reason": "synthetic_fixture"
+      },
+      "hex": "01031f080c00020088aa4816a8793bb70c005a00"
+    },
+    {
+      "name": "unknown_no_data",
+      "sample": {
+        "fix": 1,
+        "age": 65535,
+        "latitude": null,
+        "longitude": null,
+        "altitude": null,
+        "used": null,
+        "in_view": null,
+        "hdop": null,
+        "reason": "source_unavailable"
+      },
+      "hex": "010100ffff00ffff00000000000000000000ffff"
+    },
+    {
+      "name": "unknown_dimension_position",
+      "sample": {
+        "fix": 1,
+        "age": 0,
+        "latitude": 0,
+        "longitude": 0,
+        "altitude": null,
+        "used": null,
+        "in_view": null,
+        "hdop": null,
+        "reason": "synthetic_fixture"
+      },
+      "hex": "010101ffff00000000000000000000000000ffff"
+    },
+    {
+      "name": "two_d_south_east",
+      "sample": {
+        "fix": 2,
+        "age": 29,
+        "latitude": -45.25,
+        "longitude": 179.125,
+        "altitude": null,
+        "used": null,
+        "in_view": null,
+        "hdop": null,
+        "reason": "synthetic_fixture"
+      },
+      "hex": "010201ffff001d00e06507e5504ec46a0000ffff"
+    },
+    {
+      "name": "no_fix_reported_satellites",
+      "sample": {
+        "fix": 0,
+        "age": 1,
+        "latitude": null,
+        "longitude": null,
+        "altitude": null,
+        "used": 0,
+        "in_view": 7,
+        "hdop": 9.99,
+        "reason": "synthetic_fixture"
+      },
+      "hex": "01001c000700010000000000000000000000e703"
+    },
+    {
+      "name": "three_d_below_sea_level",
+      "sample": {
+        "fix": 3,
+        "age": 1,
+        "latitude": -1.5,
+        "longitude": -2.5,
+        "altitude": -1234,
+        "used": null,
+        "in_view": null,
+        "hdop": null,
+        "reason": "synthetic_fixture"
+      },
+      "hex": "010303ffff000100401e1bffc08782fe2efbffff"
+    }
+  ]
+}

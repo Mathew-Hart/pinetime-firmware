@@ -66,6 +66,7 @@ SystemTask::SystemTask(Drivers::SpiMaster& spi,
     notificationManager {notificationManager},
     heartRateSensor {heartRateSensor},
     motionSensor {motionSensor},
+    accelDiagnostics {twiMaster, motionSensor},
     settingsController {settingsController},
     heartRateController {heartRateController},
     motionController {motionController},
@@ -140,9 +141,13 @@ void SystemTask::Work() {
   settingsController.Init();
 
   displayApp.Register(this);
+#ifndef PINETIME_IS_RECOVERY
+  displayApp.Register(&accelDiagnostics);
+#endif
   displayApp.Register(&nimbleController.weather());
   displayApp.Register(&nimbleController.music());
   displayApp.Register(&nimbleController.navigation());
+  displayApp.Register(&nimbleController.gps());
   displayApp.Start(bootError);
 
   heartRateSensor.Init();

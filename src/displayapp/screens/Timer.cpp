@@ -17,8 +17,11 @@ static void btnEventHandler(lv_obj_t* obj, lv_event_t event) {
   }
 }
 
-Timer::Timer(Controllers::Timer& timerController, Controllers::MotorController& motorController, System::SystemTask& systemTask)
-  : timer {timerController}, motorController {motorController}, wakeLock(systemTask) {
+Timer::Timer(Controllers::Timer& timerController,
+             Controllers::MotorController& motorController,
+             System::SystemTask& systemTask,
+             TimerEditorState* editorState)
+  : timer {timerController}, motorController {motorController}, editorState {editorState}, wakeLock(systemTask) {
 
   lv_obj_t* colonLabel = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_font(colonLabel, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_76);
@@ -68,8 +71,13 @@ Timer::Timer(Controllers::Timer& timerController, Controllers::MotorController& 
   if (timerStatus && timerStatus->expired) {
     SetTimerRinging();
   } else if (timer.IsRunning()) {
+    DisplayTime();
     SetTimerRunning();
   } else {
+    if (editorState != nullptr) {
+      minuteCounter.SetValue(editorState->seconds / 60);
+      secondCounter.SetValue(editorState->seconds % 60);
+    }
     SetTimerStopped();
   }
 
@@ -81,6 +89,9 @@ Timer::~Timer() {
 
   // If timer has expired, reset it when leaving the screen
   auto timerStatus = timer.GetTimerState();
+  if (editorState != nullptr) {
+    editorState->seconds = timerStatus && timerStatus->expired ? 0 : minuteCounter.GetValue() * 60 + secondCounter.GetValue();
+  }
   if (timerStatus && timerStatus->expired) {
     motorController.StopRinging();
     timer.ResetExpiredTime();

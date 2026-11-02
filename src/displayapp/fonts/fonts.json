@@ -1,4 +1,14 @@
 {
+   "solar_time_42": {
+      "sources": [{"file": "open_sans_light.ttf", "symbols": "0123456789:"}],
+      "bpp": 2,
+      "size": 42
+   },
+   "solar_text_18": {
+      "sources": [{"file": "open_sans_light.ttf", "symbols": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ "}],
+      "bpp": 2,
+      "size": 18
+   },
    "jetbrains_mono_bold_20": {
       "sources": [
          {
@@ -73,5 +83,59 @@
       ],
       "bpp": 1,
       "size": 25
+   },
+   "weather_segments_90": {
+      "sources": [
+         {
+            "file": "../../resources/fonts/7segment.woff",
+            "symbols": "0123456789: -"
+         }
+      ],
+      "bpp": 1,
+      "size": 90
+   },
+   "weather_segments_36": {
+      "sources": [
+         {
+            "file": "../../resources/fonts/7segment.woff",
+            "symbols": "0123456789: -"
+         }
+      ],
+      "bpp": 1,
+      "size": 36
+   },
+   "weather_segments_24": {
+      "sources": [
+         {
+            "file": "../../resources/fonts/7segment.woff",
+            "symbols": "0123456789: -"
+         }
+      ],
+      "bpp": 1,
+      "size": 24
+   },
+   "weather_dots_17": {
+      "sources": [
+         {
+            "file": "../../resources/fonts/repetitionscrolling.ttf",
+            "symbols": "0123456789-MONTUEWEDTHUFRISATSUN WK"
+         }
+      ],
+      "bpp": 1,
+      "size": 17
+   },
+   "weather_small_12": {
+      "sources": [
+         {
+            "file": "JetBrainsMono-Regular.ttf",
+            "range": "0x20-0x7e, 0xb0"
+         },
+         {
+            "file": "FontAwesome5-Solid+Brands+Regular.woff",
+            "range": "0xf294, 0xf240-0xf244, 0xf1e6, 0xf0f3"
+         }
+      ],
+      "bpp": 1,
+      "size": 12
    }
 }

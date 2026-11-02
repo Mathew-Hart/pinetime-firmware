@@ -1,0 +1,41 @@
+{
+  "source_url": "https://eoimages.gsfc.nasa.gov/images/imagerecords/57000/57735/land_ocean_ice_cloud_2048.jpg",
+  "article_url": "https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/",
+  "credit": "NASA Goddard Space Flight Center; image by Reto St\u00f6ckli, enhancements by Robert Simmon.",
+  "source_description": "Blue Marble2002 land surface, ocean color, sea ice and cloud composite; historical imagery, not live clouds.",
+  "usage_reference": "NASA article states the images are freely available to educators, scientists, museums and the public.",
+  "source_sha256": "fb67ac030214c1891994c8f976e7f6c9cd5b0f21586aba8567250781a4fe708e",
+  "source_bytes": 593729,
+  "source_size": [
+    2048,
+    1024
+  ],
+  "projection": {
+    "type": "orthographic",
+    "center_longitude_deg": -100.0,
+    "center_latitude_deg": 20.0,
+    "axes": "+X screen right/east; +Y screen up/north; +Z toward viewer",
+    "diameter_px": 206,
+    "supersampling": 2,
+    "baked_lighting": false
+  },
+  "encoding": {
+    "indices": "8-bit",
+    "palette": "256 RGB565 colors",
+    "texture_bytes": 42436,
+    "palette_bytes": 512,
+    "total_flash_data_bytes": 42948
+  },
+  "pillow_version": "13.0.0",
+  "generator_sha256": "ebd1e6bfe8121c435caf7f6210d9c07806b464cfc3eadd2c27990d2dd4d4e408",
+  "header_sha256": "81a3b36232a45793e3620e68476fca736b4b7cbb1e99a33a0d7dcde36b13c04d",
+  "projected_png_sha256": "53632cd000d933bcca04a2a0dfb64c48e6d759752db2bbcf173c92988b71c0d7",
+  "indexed_png_sha256": "75ef781501a9959814dfc24b9a46ce185d7ab61ff56d400e2b956df2be6e70cb",
+  "phone_actions": [],
+  "generator_sha256_role": "Original generator used for the checked-in texture before publication path adaptation",
+  "portable_generator": {
+    "path": "codex/tools/generate-earth-texture.py",
+    "sha256": "d3b0a70759781e42cd7d0ee7c58bd8aab897edacf9c0d365a561b64e9e126804",
+    "note": "Repository-relative paths and check mode; projection, quantization and header bytes unchanged"
+  }
+}

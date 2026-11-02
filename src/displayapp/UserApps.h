@@ -3,18 +3,20 @@
 #include "Controllers.h"
 
 #include "displayapp/screens/Alarm.h"
-#include "displayapp/screens/Dice.h"
+#include "displayapp/screens/ClockTools.h"
+#include "displayapp/screens/AccelDiagnostics.h"
 #include "displayapp/screens/Timer.h"
-#include "displayapp/screens/Twos.h"
 #include "displayapp/screens/Tile.h"
 #include "displayapp/screens/ApplicationList.h"
 #include "displayapp/screens/WatchFaceDigital.h"
 #include "displayapp/screens/WatchFaceAnalog.h"
-#include "displayapp/screens/WatchFaceCasioStyleG7710.h"
-#include "displayapp/screens/WatchFaceInfineat.h"
-#include "displayapp/screens/WatchFacePineTimeStyle.h"
+#include "displayapp/screens/WatchFaceElegant.h"
+#include "displayapp/screens/WatchFaceBinary.h"
+#include "displayapp/screens/WatchFaceEarth.h"
+#include "displayapp/screens/WatchFaceSolar.h"
+#include "displayapp/screens/WatchFaceGps.h"
+#include "displayapp/screens/WatchFaceWeatherFocus.h"
 #include "displayapp/screens/WatchFaceTerminal.h"
-#include "displayapp/screens/WatchFacePrideFlag.h"
 
 namespace Pinetime {
   namespace Applications {

@@ -10,18 +10,50 @@ namespace Pinetime {
     public:
       enum class ErrorCodes { NoError, TransactionFailed };
 
+      // Keep the original API's error values unchanged. Diagnostics use this richer,
+      // per-transaction result rather than shared last-error state.
+      enum class DiagnosticError {
+        None,
+        NotRead,
+        AddressNack,
+        DataNack,
+        Overrun,
+        StartTimeout,
+        TransferTimeout,
+        StopTimeout,
+        SuspendTimeout,
+        LockTimeout,
+        InvalidArgument,
+        UnknownBusError
+      };
+
+      struct DiagnosticResult {
+        DiagnosticError error = DiagnosticError::NotRead;
+        uint32_t errorSource = 0;
+
+        bool IsOk() const {
+          return error == DiagnosticError::None;
+        }
+      };
+
       TwiMaster(NRF_TWIM_Type* module, uint32_t frequency, uint8_t pinSda, uint8_t pinScl);
 
       void Init();
       ErrorCodes Read(uint8_t deviceAddress, uint8_t registerAddress, uint8_t* buffer, size_t size);
+      DiagnosticResult ReadDiagnostic(uint8_t deviceAddress, uint8_t registerAddress, uint8_t* buffer, size_t size);
       ErrorCodes Write(uint8_t deviceAddress, uint8_t registerAddress, const uint8_t* data, size_t size);
 
       void Sleep();
       void Wakeup();
 
     private:
-      ErrorCodes Read(uint8_t deviceAddress, uint8_t* buffer, size_t size, bool stop);
-      ErrorCodes Write(uint8_t deviceAddress, const uint8_t* data, size_t size, bool stop);
+      DiagnosticResult Read(uint8_t deviceAddress, uint8_t* buffer, size_t size, bool stop);
+      DiagnosticResult Write(uint8_t deviceAddress, const uint8_t* data, size_t size, bool stop);
+      DiagnosticResult WaitForEvent(volatile uint32_t& event, DiagnosticError timeout);
+      DiagnosticResult FinishTransfer(bool stop);
+      DiagnosticResult BusError() const;
+      DiagnosticResult AbortTransfer(DiagnosticResult result);
+      void ClearEvents();
       void FixHwFreezed();
       void ConfigurePins() const;
 
@@ -34,8 +66,11 @@ namespace Pinetime {
       static constexpr uint8_t maxDataSize {16};
       static constexpr uint8_t registerSize {1};
       uint8_t internalBuffer[maxDataSize + registerSize];
-      uint32_t txStartedCycleCount = 0;
-      static constexpr uint32_t HwFreezedDelay {161000};
+      // 10 ms at the nRF52832's 64 MHz: enough for the longest 17-byte transfer
+      // even at 100 kHz. RTOS ticks and the poll limit also bound waits when
+      // CYCCNT is stopped (including early startup before the scheduler runs).
+      static constexpr uint32_t HwFreezedDelay {640000};
+      static constexpr uint32_t MaxPolls {64000};
     };
   }
 }

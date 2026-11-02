@@ -1,0 +1,13 @@
+# Recorded Python 3.11 build and host-render environment.
+adafruit-nrfutil==0.5.3.post16
+cbor==1.0.0
+cffi==2.1.1
+click==8.5.0
+cmake==3.31.6
+cryptography==50.0.2
+ecdsa==0.19.2
+intelhex==2.3.0
+pillow==13.0.0
+pycparser==3.12
+pyserial==3.5
+six==1.17.0

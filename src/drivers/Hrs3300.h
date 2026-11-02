@@ -1,6 +1,7 @@
 #pragma once
 
 #include "drivers/TwiMaster.h"
+#include <optional>
 
 namespace Pinetime {
   namespace Drivers {
@@ -33,16 +34,16 @@ namespace Pinetime {
       Hrs3300& operator=(Hrs3300&&) = delete;
 
       void Init();
-      void Enable();
+      bool Enable();
       void Disable();
-      PackedHrsAls ReadHrsAls();
+      std::optional<PackedHrsAls> ReadHrsAls();
 
     private:
       TwiMaster& twiMaster;
       uint8_t twiAddress;
 
-      void WriteRegister(uint8_t reg, uint8_t data);
-      uint8_t ReadRegister(uint8_t reg);
+      bool WriteRegister(uint8_t reg, uint8_t data);
+      std::optional<uint8_t> ReadRegister(uint8_t reg);
     };
   }
 }

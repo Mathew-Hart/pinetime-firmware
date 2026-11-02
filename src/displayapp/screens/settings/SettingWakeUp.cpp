@@ -44,7 +44,7 @@ SettingWakeUp::SettingWakeUp(Pinetime::Controllers::Settings& settingsController
   for (unsigned int i = 0; i < options.size(); i++) {
     cbOption[i] = lv_checkbox_create(container1, nullptr);
     lv_checkbox_set_text_static(cbOption[i], options[i].name);
-    if (settingsController.isWakeUpModeOn(static_cast<Controllers::Settings::WakeUpMode>(i))) {
+    if (settingsController.isWakeUpModeOn(options[i].wakeUpMode)) {
       lv_checkbox_set_checked(cbOption[i], true);
     }
     cbOption[i]->user_data = this;
@@ -70,8 +70,7 @@ void SettingWakeUp::UpdateSelected(lv_obj_t* object) {
   // Update checkbox according to current wakeup modes.
   // This is needed because we can have extra logic when setting or unsetting wakeup modes,
   // for example, when setting SingleTap, DoubleTap is unset and vice versa.
-  auto modes = settingsController.getWakeUpModes();
   for (size_t i = 0; i < options.size(); ++i) {
-    lv_checkbox_set_checked(cbOption[i], modes[i]);
+    lv_checkbox_set_checked(cbOption[i], settingsController.isWakeUpModeOn(options[i].wakeUpMode));
   }
 }

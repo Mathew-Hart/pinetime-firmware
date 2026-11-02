@@ -202,6 +202,11 @@ void Alarm::UpdateAlarmTime() {
 }
 
 void Alarm::SetAlerting() {
+  // A repeated AlarmTriggered message must not orphan a second LVGL timeout
+  // that could later call StopAlerting() on a destroyed screen.
+  if (taskStopAlarm != nullptr) {
+    return;
+  }
   lv_obj_set_hidden(enableSwitch, true);
   lv_obj_set_hidden(btnRecur, true);
   lv_obj_set_hidden(btnInfo, true);

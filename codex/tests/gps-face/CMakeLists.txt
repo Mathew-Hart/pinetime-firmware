@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.16)
+project(gps_face_test LANGUAGES C CXX)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 20)
+get_filename_component(CODEX_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
+get_filename_component(REPO_ROOT "${CODEX_ROOT}/.." ABSOLUTE)
+set(SOURCE "${REPO_ROOT}/src")
+set(PINETIME_BUILD_DIR "${REPO_ROOT}/build" CACHE PATH "Firmware build containing generated fonts")
+set(FONTS_ROOT "${PINETIME_BUILD_DIR}/src")
+file(GLOB_RECURSE LVGL_SOURCES "${SOURCE}/libs/lvgl/src/*.c")
+file(GLOB FONT_SOURCES "${FONTS_ROOT}/displayapp/fonts/*.c")
+set(USERAPP_TYPES "Apps::Clock")
+set(WATCHFACE_TYPES "WatchFace::Gps")
+configure_file("${SOURCE}/displayapp/apps/Apps.h.in" "${CMAKE_CURRENT_BINARY_DIR}/displayapp/apps/Apps.h")
+add_library(ui_lvgl STATIC ${LVGL_SOURCES} ${FONT_SOURCES})
+target_include_directories(ui_lvgl PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/stubs" "${CODEX_ROOT}/host" "${SOURCE}/libs")
+target_compile_definitions(ui_lvgl PUBLIC LV_CONF_INCLUDE_SIMPLE)
+target_compile_options(ui_lvgl PRIVATE -Wno-deprecated-non-prototype -Wno-incompatible-pointer-types-discards-qualifiers)
+add_executable(gps-face-test render_test.cpp
+ "${SOURCE}/displayapp/screens/WatchFaceGps.cpp"
+ "${SOURCE}/displayapp/screens/Screen.cpp"
+ "${SOURCE}/displayapp/InfiniTimeTheme.cpp")
+target_include_directories(gps-face-test BEFORE PRIVATE
+ "${CMAKE_CURRENT_SOURCE_DIR}/stubs" "${CMAKE_CURRENT_BINARY_DIR}" "${FONTS_ROOT}" "${SOURCE}")
+target_link_libraries(gps-face-test PRIVATE ui_lvgl)
