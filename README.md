@@ -8,8 +8,6 @@ The customized firmware and its build instructions live on [`main`](https://gith
 
 The **1.16.1-wf4** draft starts from InfiniTime 1.16.1, commit `e172b9b3c447e2b79c45510c751855a090a208b4`. Upstream history, copyright notices and pinned submodules are retained; the [original InfiniTime README](README.upstream.md) is preserved for reference.
 
-**The current GPS draft is built and tested locally. It has not been installed on a watch. Its phone GPS companion has not been installed, and live phone-to-watch GPS has not been verified.** Preview coordinates are synthetic test values.
-
 Weather, navigation and notification forwarding depend on separate phone integrations. This repository currently bundles only the optional GPS companion; cloning it does not install the rest of the PinePhone setup.
 
 ## Watch face screenshots
