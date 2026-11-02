@@ -12,7 +12,28 @@ The **1.16.1-wf4** draft starts from InfiniTime 1.16.1, commit `e172b9b3c447e2b7
 
 Weather, navigation and notification forwarding depend on separate phone integrations. This repository currently bundles only the optional GPS companion; cloning it does not install the rest of the PinePhone setup.
 
-![GPS face, rendered by the actual LVGL screen with synthetic data](codex/previews/gps-preview.png)
+## Watch face screenshots
+
+Native 240×240 software captures from the firmware’s LVGL rendering code, using synthetic sample readings. Solar is shown at two times of day. See [capture details and image provenance](codex/previews/watchfaces/README.md).
+
+<table>
+  <tr>
+    <td align="center"><strong>Weather focus</strong><br><img src="codex/previews/watchfaces/weather-focus.png" width="240" height="240" alt="Weather focus with weather, Paris and Tokyo clocks, and an alarm indicator"></td>
+    <td align="center"><strong>Analog with complications</strong><br><img src="codex/previews/watchfaces/analog.png" width="240" height="240" alt="Analog face with sample weather temperature and heart rate"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Elegant</strong><br><img src="codex/previews/watchfaces/elegant.png" width="240" height="240" alt="Elegant face with two hands and tick marks"></td>
+    <td align="center"><strong>Binary</strong><br><img src="codex/previews/watchfaces/binary.png" width="240" height="240" alt="Binary face showing hours, minutes and seconds as illuminated dots"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Earth</strong><br><img src="codex/previews/watchfaces/earth.png" width="240" height="240" alt="Earth face showing day and night, time and sample weather"></td>
+    <td align="center"><strong>GPS</strong><br><img src="codex/previews/watchfaces/gps.png" width="240" height="240" alt="GPS face showing a synthetic 3D fix and sample coordinates"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Solar — morning</strong><br><img src="codex/previews/watchfaces/solar-morning.png" width="240" height="240" alt="Solar face at 08:23 on the nominal daily path"></td>
+    <td align="center"><strong>Solar — afternoon</strong><br><img src="codex/previews/watchfaces/solar-afternoon.png" width="240" height="240" alt="Solar face at 13:15 on the nominal daily path"></td>
+  </tr>
+</table>
 
 ## Faces and controls
 
@@ -35,10 +56,6 @@ In **Settings → Watch face**, check the faces you want in the cycle. Swipe **r
 On Analog, tap the upper-left temperature to open Weather. Heart rate is sampled when Analog becomes visible and then every ten minutes while it remains visible; sampling stops when the face is hidden. A reading or a 30-second timeout ends each attempt.
 
 Clock Tools combines Alarm, Timer and Stopwatch. This profile removes games, Paint, Steps and accelerometer-based raise/shake/lower wake controls, and adds an I²C accelerometer diagnostic app. It is intended for development with a watch whose accelerometer is unavailable.
-
-![Solar examples rendered by the actual LVGL screen](codex/previews/solar-preview.png)
-
-![Earth examples rendered by the actual LVGL screen](codex/previews/earth-preview.png)
 
 Earth uses a fixed historical NASA cloud composite, not live satellite imagery. Its lighting requires a synchronized time zone and a supported UTC date; otherwise the globe is neutral and shows `SYNC TIME`. Solar uses valid current-day sunrise/sunset values when supplied by weather telemetry, with a **06:00/18:00 fallback**. Its curve is a time-of-day illustration, not a location-accurate solar-altitude display. The existing version-0 weather feed does not supply sunrise/sunset, so it uses that fallback.
 
