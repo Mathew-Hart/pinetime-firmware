@@ -4,7 +4,7 @@ Personal firmware for my PINE64 PineTime, developed for use with a Linux PinePho
 
 This is an **independently maintained derivative of [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime)**. The repository is standalone, and these changes are not intended for upstream integration. Future InfiniTime fixes may be incorporated selectively; updates are not imported automatically.
 
-The customized firmware and its build instructions live on [`main`](https://github.com/Mathew-Hart/pinetime-firmware/tree/main). The [original upstream source snapshot](https://github.com/Mathew-Hart/pinetime-firmware/tree/0ffd888745aa14a67ad7cf9fb77ce45804e1d092) is preserved in the repository history. Temporary development branches may be used for unfinished work.
+The customized firmware and its build instructions live on [`main`](https://github.com/Mathew-Hart/pinetime-firmware/tree/main). The original upstream source snapshot is preserved with the [`upstream-main-2026-10-26`](https://github.com/Mathew-Hart/pinetime-firmware/tree/upstream-main-2026-10-26) tag. Temporary development branches may be used for unfinished work.
 
 The **1.16.1-wf4** draft starts from InfiniTime 1.16.1, commit `e172b9b3c447e2b79c45510c751855a090a208b4`. Upstream history, copyright notices and pinned submodules are retained; the [original InfiniTime README](README.upstream.md) is preserved for reference.
 
