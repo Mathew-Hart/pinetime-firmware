@@ -1,0 +1,285 @@
+{
+  "capture_kind": "Actual firmware LVGL software rendering; not photographs of the physical watch",
+  "synthetic_sample_data": true,
+  "source_ref": "codex/wf4-draft",
+  "source_commit": "622561fd04bad6fc4177d9b0c78d0006805cf7b7",
+  "source_fidelity": "Face and helper source hashes match the original capture receipts, or the Weather focus original source. Shared LVGL configuration and existing font definitions are unchanged; later Solar fonts were added.",
+  "harness_note": "Original capture harnesses are identified for provenance. Only the GPS harness is included in this public repository; the other original host harnesses are not bundled here.",
+  "weather_receipt_note": "The original Weather focus preview has no image-hash test receipt. Its PNG pixels match the raw LVGL PPM and its face/view/symbol source files match the current source.",
+  "limitations": [
+    "Fixture weather, heart rate, alarm, time and GPS values are synthetic sample data.",
+    "GPS phone-to-watch integration remains unverified on hardware.",
+    "Solar screenshots use nominal sunrise 06:00 and sunset 18:00; the path is illustrative, not a calculated solar altitude.",
+    "Earth uses historical NASA Blue Marble 2002 imagery with simulated date-derived day/night lighting; its clouds are not live weather."
+  ],
+  "earth_credit": {
+    "name": "NASA Blue Marble 2002",
+    "credit": "NASA Goddard Space Flight Center; image by Reto Stöckli, enhancements by Robert Simmon.",
+    "details": "https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/codex/assets/earth/README.md"
+  },
+  "images": [
+    {
+      "path": "codex/previews/watchfaces/weather-focus.png",
+      "face": "Weather focus",
+      "sha256": "215af0a146e00c031e86067a528b236747f8ccfe16bf8aa1ab195a9d7d274e58",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "sample.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "preview/render.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": null,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceWeatherFocus.h",
+        "src/displayapp/screens/WatchFaceWeatherFocus.cpp",
+        "src/displayapp/screens/WeatherFocusView.h",
+        "src/displayapp/screens/WeatherFocusView.cpp",
+        "src/displayapp/screens/WeatherSymbols.h",
+        "src/displayapp/screens/WeatherSymbols.cpp"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/analog.png",
+      "face": "Analog",
+      "sha256": "67e2b90f0bf0bc14699b813a3b0b5268c2373fc6ead07a2eea917f2309f33edb",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "analog-heart-rate-72.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/analog-heart-rate/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceAnalog.h",
+        "src/displayapp/screens/WatchFaceAnalog.cpp",
+        "src/displayapp/screens/AnalogWeather.h",
+        "src/displayapp/screens/AnalogWeather.cpp",
+        "src/displayapp/screens/BatteryIcon.h",
+        "src/displayapp/screens/BatteryIcon.cpp",
+        "src/displayapp/screens/NotificationIcon.cpp"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/elegant.png",
+      "face": "Elegant",
+      "sha256": "b8a41c9befb141d6735269bdcb012f4cc8565930c0890cd1b242fe40afa034f6",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "elegant-10-08.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/elegant-face/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceElegant.h",
+        "src/displayapp/screens/WatchFaceElegant.cpp"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/binary.png",
+      "face": "Binary",
+      "sha256": "730628c00fe414d0ecbbf7bd023388defa6103827d44cb2ea62b20be704d1640",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "binary-10-08-42.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/binary-face/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceBinary.h",
+        "src/displayapp/screens/WatchFaceBinary.cpp"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/earth.png",
+      "face": "Earth",
+      "sha256": "adeb3051084ceedf2c97ffdb2fa900aa41ef3a2ebdee2da35f75e1c73190178b",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "earth-terminator.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/earth-face/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceEarth.h",
+        "src/displayapp/screens/WatchFaceEarth.cpp",
+        "src/displayapp/screens/EarthGlobe.h",
+        "src/displayapp/screens/EarthGlobe.cpp",
+        "src/displayapp/screens/EarthSolarPosition.h",
+        "src/displayapp/screens/EarthTexture.h"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/solar-morning.png",
+      "face": "Solar morning",
+      "sha256": "203d8b0fe671da43a64489cfbce8c91874df0980f1a8164caba3f93a7086c1f0",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "solar-08-23-nominal.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/solar-face/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceSolar.h",
+        "src/displayapp/screens/WatchFaceSolar.cpp",
+        "src/displayapp/screens/SolarGlow.h",
+        "src/displayapp/screens/SolarGlow.cpp",
+        "src/displayapp/screens/SolarCurve.h"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/solar-afternoon.png",
+      "face": "Solar afternoon",
+      "sha256": "2b068a594ea9873606f2e3a07cd1f62c015531cf3f82caf0ced39a0d91781542",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "solar-13-15-nominal.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "tests/solar-face/render_test.cpp",
+      "capture_harness_in_public_repository": false,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceSolar.h",
+        "src/displayapp/screens/WatchFaceSolar.cpp",
+        "src/displayapp/screens/SolarGlow.h",
+        "src/displayapp/screens/SolarGlow.cpp",
+        "src/displayapp/screens/SolarCurve.h"
+      ]
+    },
+    {
+      "path": "codex/previews/watchfaces/gps.png",
+      "face": "GPS",
+      "sha256": "a464d0d3ea8b1c4eea4a767d719dbdeaeb074b5c8c8a83490961249f91b51eb9",
+      "size": [
+        240,
+        240
+      ],
+      "synthetic_sample_data": true,
+      "raw_frame": "gps-3d-sample.ppm",
+      "pixels_equal_raw_frame": true,
+      "png_chunks": [
+        "IHDR",
+        "IDAT",
+        "IEND"
+      ],
+      "original_capture_harness": "codex/tests/gps-face/render_test.cpp",
+      "capture_harness_in_public_repository": true,
+      "original_render_receipt_hash_match": true,
+      "source_paths": [
+        "src/displayapp/screens/WatchFaceGps.h",
+        "src/displayapp/screens/WatchFaceGps.cpp",
+        "src/components/ble/GpsData.h",
+        "src/components/ble/GpsService.h"
+      ]
+    }
+  ],
+  "source_sha256": {
+    "src/components/ble/GpsData.h": "e23875e1355188803ce19309a4291c4ed9c13d4da186b1d3687a5d8dca3a10fb",
+    "src/components/ble/GpsService.h": "31b316a945b4cfcc9088e3b95a5a773d0ef0800fbcff8eddbe02e6f05f1692a8",
+    "src/displayapp/InfiniTimeTheme.cpp": "f1483e99ef21c1d92c1730ccd19e02ddd20b4384e2980e9400c83ff922ff58ae",
+    "src/displayapp/InfiniTimeTheme.h": "bb32f92495afdb574427394aa7f74b852466b0e7ea20470595bc06e942bc5104",
+    "src/displayapp/fonts/fonts.json": "f6f1c55278359ea8a2f608967878f91d3783a44deba4806c736c5e79b3e0ee3f",
+    "src/displayapp/fonts/generate.py": "05c310977f37807d9f931b8b457931914f6761bc86fa64b883d1048f007c8c19",
+    "src/displayapp/screens/AnalogWeather.cpp": "008b01ec1c14f822f4dcdf2999735d8a4785944c7e0f9b707017b311200bd7e5",
+    "src/displayapp/screens/AnalogWeather.h": "ade671468ccfa0571b3016271c5684e62aae8f9b8141049051c814a69168e729",
+    "src/displayapp/screens/BatteryIcon.cpp": "7680c058ac53de5b2b6bddc225033e1be664a96f37fb2007aef073fa5197a1cf",
+    "src/displayapp/screens/BatteryIcon.h": "5c9159f9e6cef76ffe8820989f33f085fa06511d6a7be365d2d3451f98f23573",
+    "src/displayapp/screens/EarthGlobe.cpp": "672c6a823c610220de20ab6dc7e1afc6d6afc4983dea2b3a4ee57302796ebdc9",
+    "src/displayapp/screens/EarthGlobe.h": "49640c3ac3f7d1ac26aa4a2550d4cd06ded73bb4dcb222500e485c3498ca2494",
+    "src/displayapp/screens/EarthSolarPosition.h": "3f477ab7fccb332538f29e99158b743f029039739acf3cd4f0b695a22ad9f0d2",
+    "src/displayapp/screens/EarthTexture.h": "81a3b36232a45793e3620e68476fca736b4b7cbb1e99a33a0d7dcde36b13c04d",
+    "src/displayapp/screens/NotificationIcon.cpp": "d0c7e481b26e1dfc30d7236fa2c1c263b52c9e4b2df12fd7b97187cc1e5685ad",
+    "src/displayapp/screens/Screen.cpp": "ad32a686ff9661bc5666b2a1328c725cc9145c186b0c7ab41c6884c4e229aab9",
+    "src/displayapp/screens/Screen.h": "f0cee80a8f9f9015a606b589b09501089f755d0f16686127c75ad824dbe2b2ea",
+    "src/displayapp/screens/SolarCurve.h": "508b8fa01b47ed5b3305bd2b516aaf6e499d56b9817530c70e66f29e58d83203",
+    "src/displayapp/screens/SolarGlow.cpp": "a30a5695e867c14ddba3a3c70126cb9078631caea91de3cf77cdc24ffcb2fa65",
+    "src/displayapp/screens/SolarGlow.h": "543bde7b5b65bfe96dec7a9090227be63efff59541cf6b100ddef498aabff551",
+    "src/displayapp/screens/WatchFaceAnalog.cpp": "7a433fab2e5f1c838f9794fa1ec75374694febadc31a863a7ed4f54f666512e6",
+    "src/displayapp/screens/WatchFaceAnalog.h": "231e6640d241f5a5e3f6d662eba2ed2939ca5ed872d62d6ad832070a9759600f",
+    "src/displayapp/screens/WatchFaceBinary.cpp": "1025f5f11b17ba11f9cb15c401259eac723d5c8102fe858de529c7af376c22be",
+    "src/displayapp/screens/WatchFaceBinary.h": "d4804c902bba6f91794c2fa4f70d28ed09227130b9728315206d5d0cbf8259f5",
+    "src/displayapp/screens/WatchFaceEarth.cpp": "5b43aa0785630c95ce90889906bf24b60b4d92ea798ecbe23ec026e5be3e9957",
+    "src/displayapp/screens/WatchFaceEarth.h": "b12ebe5287592735dcb31d77a4b195528bf2d891620e0c85d6375485e2bade9b",
+    "src/displayapp/screens/WatchFaceElegant.cpp": "8c0b8d81e052561cdc1d5e64147fc04850056fb880b1e6d37e2c9e0878c21d8e",
+    "src/displayapp/screens/WatchFaceElegant.h": "08f0e66c08967e4dc975b6f4d3c9018c937e329b9359e6b7b18f6d850a5b3827",
+    "src/displayapp/screens/WatchFaceGps.cpp": "45eb0cd86a50467e4cffdea1d63a0e8c41e3524be0b419002ce6ad9e72b66eb2",
+    "src/displayapp/screens/WatchFaceGps.h": "1f9f63d571cf39f7804ad8ee59b37cdc1bfd1d6cdd36fcbbcc2a0b993608a55b",
+    "src/displayapp/screens/WatchFaceSolar.cpp": "94ab06cd13497a2fda4baf783d49b32b2651ffef30f4d39344ae794ad4e1d6c9",
+    "src/displayapp/screens/WatchFaceSolar.h": "1de6be13cadc1ded71ae2945a58f57874ea0d6b2dc383e6b31047fb9644e4acf",
+    "src/displayapp/screens/WatchFaceWeatherFocus.cpp": "c4374be855d6bf537d0ca2043443f389f21a2a75cda7bdd560cf976f7d43072f",
+    "src/displayapp/screens/WatchFaceWeatherFocus.h": "2628b8140eb662e23e0b94ddba063f61f38d5e836219cd6426df5ae7c0fbe841",
+    "src/displayapp/screens/WeatherFocusView.cpp": "8d82156216189fd065170b78008e688ae9f17955a185d65a5641be27a80db9a7",
+    "src/displayapp/screens/WeatherFocusView.h": "0b1f02cafe163b6aa9ab0282becded85cf3de5b0218aae7103d89c3764eb190c",
+    "src/displayapp/screens/WeatherSymbols.cpp": "8086aed8541c90a01bd332c34b18dd12aaa09e3b0cf198c5bca954d6d3bfd6c5",
+    "src/displayapp/screens/WeatherSymbols.h": "077860238f5558480a54e60796088d0dbaee08ef42c1a98f4dbc0e6c844a6be8",
+    "src/libs/lv_conf.h": "e95f8b04a319c127482ed6a9c537deffad7db27ea14ae67dd6b14924fe649415"
+  },
+  "shared_source_paths": [
+    "src/displayapp/screens/Screen.h",
+    "src/displayapp/screens/Screen.cpp",
+    "src/displayapp/InfiniTimeTheme.h",
+    "src/displayapp/InfiniTimeTheme.cpp",
+    "src/libs/lv_conf.h",
+    "src/displayapp/fonts/fonts.json",
+    "src/displayapp/fonts/generate.py"
+  ]
+}
