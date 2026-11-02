@@ -1,8 +1,16 @@
-# PineTime wf4
+# PineTime firmware — wf4
 
-A custom InfiniTime **1.16.1-wf4** development draft for the PINE64 PineTime. It adds watch faces, independent face selection, combined clock tools and an accelerometer diagnostic screen. The firmware starts from [InfiniTime 1.16.1](https://github.com/InfiniTimeOrg/InfiniTime), commit `e172b9b3c447e2b79c45510c751855a090a208b4`; upstream history, documentation and pinned submodules are retained.
+Personal firmware for my PINE64 PineTime, developed for use with a Linux PinePhone. This project is a place for custom watch faces, simpler apps and experiments tailored to my own watch.
+
+This is an **independently maintained derivative of [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime)**. The repository is standalone, and these changes are not intended for upstream integration. Future InfiniTime fixes may be incorporated selectively; updates are not imported automatically.
+
+The current development source is on [`codex/wf4-draft`](https://github.com/Mathew-Hart/pinetime-firmware/tree/codex/wf4-draft). The default `main` branch provides the project overview over a preserved upstream source snapshot. Build this draft branch to get the custom firmware described below.
+
+The **1.16.1-wf4** draft starts from InfiniTime 1.16.1, commit `e172b9b3c447e2b79c45510c751855a090a208b4`. Upstream history, copyright notices and pinned submodules are retained; the [original InfiniTime README](README.upstream.md) is preserved for reference.
 
 **The current GPS draft is built and tested locally. It has not been installed on a watch. Its phone GPS companion has not been installed, and live phone-to-watch GPS has not been verified.** Preview coordinates are synthetic test values.
+
+Weather, navigation and notification forwarding depend on separate phone integrations. This repository currently bundles only the optional GPS companion; cloning it does not install the rest of the PinePhone setup.
 
 ![GPS face, rendered by the actual LVGL screen with synthetic data](codex/previews/gps-preview.png)
 
