@@ -45,7 +45,9 @@ namespace Pinetime {
       SettingShakeThreshold,
       SettingBluetooth,
       SettingOTA,
-      Error
+      Error,
+      ClockTools,
+      AccelDiagnostics
     };
 
     enum class WatchFace : uint8_t {
@@ -55,9 +57,13 @@ namespace Pinetime {
       Terminal,
       Infineat,
       CasioStyleG7710,
-      Numerals,
       PrideFlag,
-      Legend,
+      WeatherFocus,
+      Elegant,
+      Binary,
+      Earth,
+      Solar,
+      Gps,
     };
 
     template <Apps>

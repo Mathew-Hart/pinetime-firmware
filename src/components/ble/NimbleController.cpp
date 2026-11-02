@@ -98,6 +98,8 @@ void NimbleController::Init() {
   heartRateService.Init();
   motionService.Init();
   fsService.Init();
+  // Append GPS so existing bonded clients retain every prior service handle.
+  gpsService.Init();
 
   int rc;
   rc = ble_hs_util_ensure_addr(0);
@@ -132,6 +134,11 @@ void NimbleController::Init() {
   ASSERT(rc == 0);
 
   RestoreBond();
+
+  // Existing subscribers discover the appended GPS range once after boot.
+  if (!gpsService.AnnounceDatabaseChange()) {
+    NRF_LOG_WARNING("GPS Service Changed range lookup failed");
+  }
 
   StartAdvertising();
 }
@@ -198,6 +205,7 @@ int NimbleController::OnGAPEvent(ble_gap_event* event) {
 
       if (event->connect.status != 0) {
         /* Connection failed; resume advertising. */
+        gpsService.SetConnected(false);
         currentTimeClient.Reset();
         alertNotificationClient.Reset();
         connectionHandle = BLE_HS_CONN_HANDLE_NONE;
@@ -206,6 +214,7 @@ int NimbleController::OnGAPEvent(ble_gap_event* event) {
         StartAdvertising();
       } else {
         connectionHandle = event->connect.conn_handle;
+        gpsService.SetConnected(true);
         bleController.Connect();
         systemTask.PushMessage(Pinetime::System::Messages::BleConnected);
         // Service discovery is deferred via systemtask
@@ -223,6 +232,7 @@ int NimbleController::OnGAPEvent(ble_gap_event* event) {
 
       currentTimeClient.Reset();
       alertNotificationClient.Reset();
+      gpsService.SetConnected(false);
       connectionHandle = BLE_HS_CONN_HANDLE_NONE;
       if (bleController.IsConnected()) {
         bleController.Disconnect();

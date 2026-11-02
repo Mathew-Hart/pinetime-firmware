@@ -1,7 +1,7 @@
 {
   "capture_kind": "Actual firmware LVGL software rendering; not photographs of the physical watch",
   "synthetic_sample_data": true,
-  "source_ref": "codex/wf4-draft",
+  "source_ref": "main",
   "source_commit": "622561fd04bad6fc4177d9b0c78d0006805cf7b7",
   "source_fidelity": "Face and helper source hashes match the original capture receipts, or the Weather focus original source. Shared LVGL configuration and existing font definitions are unchanged; later Solar fonts were added.",
   "harness_note": "Original capture harnesses are identified for provenance. Only the GPS harness is included in this public repository; the other original host harnesses are not bundled here.",
@@ -15,7 +15,7 @@
   "earth_credit": {
     "name": "NASA Blue Marble 2002",
     "credit": "NASA Goddard Space Flight Center; image by Reto Stöckli, enhancements by Robert Simmon.",
-    "details": "https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/codex/assets/earth/README.md"
+    "details": "https://github.com/Mathew-Hart/pinetime-firmware/blob/main/codex/assets/earth/README.md"
   },
   "images": [
     {

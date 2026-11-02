@@ -47,6 +47,10 @@ namespace Pinetime {
        */
       void SetTimeZone(int8_t timezone, int8_t dst);
 
+      bool HasTimeZone() const {
+        return hasTimeZone;
+      }
+
       uint16_t Year() const {
         return 1900 + localTime.tm_year;
       }
@@ -146,6 +150,7 @@ namespace Pinetime {
       std::tm localTime;
       int8_t tzOffset = 0;
       int8_t dstOffset = 0;
+      bool hasTimeZone = false;
 
       SemaphoreHandle_t mutex = nullptr;
 

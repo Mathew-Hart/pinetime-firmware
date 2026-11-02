@@ -6,6 +6,11 @@
 using namespace Pinetime::Applications::Screens;
 
 namespace {
+  void lv_update_task(struct _lv_task_t* task) {
+    auto* user_data = static_cast<Tile*>(task->user_data);
+    user_data->UpdateScreen();
+  }
+
   void event_handler(lv_obj_t* obj, lv_event_t event) {
     if (event != LV_EVENT_VALUE_CHANGED) {
       return;
@@ -81,21 +86,19 @@ Tile::Tile(uint8_t screenID,
   btnm1->user_data = this;
   lv_obj_set_event_cb(btnm1, event_handler);
 
-  Refresh();
-  taskRefresh = lv_task_create(RefreshTaskCallback, LV_DISP_DEF_REFR_PERIOD, LV_TASK_PRIO_MID, this);
+  taskUpdate = lv_task_create(lv_update_task, 5000, LV_TASK_PRIO_MID, this);
+
+  UpdateScreen();
 }
 
 Tile::~Tile() {
-  lv_task_del(taskRefresh);
+  lv_task_del(taskUpdate);
   lv_obj_clean(lv_scr_act());
 }
 
-void Tile::Refresh() {
+void Tile::UpdateScreen() {
+  lv_label_set_text(label_time, dateTimeController.FormattedTime().c_str());
   statusIcons.Update();
-  currentDateTime = std::chrono::time_point_cast<std::chrono::minutes>(dateTimeController.CurrentDateTime());
-  if (currentDateTime.IsUpdated()) {
-    lv_label_set_text(label_time, dateTimeController.FormattedTime().c_str());
-  }
 }
 
 void Tile::OnValueChangedEvent(lv_obj_t* obj, uint32_t buttonId) {

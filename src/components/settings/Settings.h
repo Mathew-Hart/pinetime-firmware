@@ -5,6 +5,7 @@
 #include <optional>
 #include "components/brightness/BrightnessController.h"
 #include "components/fs/FS.h"
+#include "components/settings/WatchFaceSelection.h"
 #include "displayapp/apps/Apps.h"
 #include <nrf_log.h>
 
@@ -39,7 +40,7 @@ namespace Pinetime {
       };
       enum class PTSGaugeStyle : uint8_t { Full, Half, Numeric };
       enum class PTSWeather : uint8_t { On, Off };
-      enum class PrideFlag : uint8_t { Gay, Trans, Bi, Lesbian, Nonbinary, Ace, Aro, AroAce, Pan };
+      enum class PrideFlag : uint8_t { Gay, Trans, Bi, Lesbian };
       enum class DfuAndFsMode : uint8_t { Disabled, Enabled, EnabledTillReboot };
 
       struct PineTimeStyle {
@@ -75,6 +76,16 @@ namespace Pinetime {
       Pinetime::Applications::WatchFace GetWatchFace() const {
         return settings.watchFace;
       };
+
+      bool IsWatchFaceEnabled(Pinetime::Applications::WatchFace face) const {
+        return watchFaceSelection.IsEnabled(static_cast<uint8_t>(face));
+      }
+
+      void SetWatchFaceEnabled(Pinetime::Applications::WatchFace face, bool enabled) {
+        if (watchFaceSelection.SetEnabled(static_cast<uint8_t>(face), enabled)) {
+          watchFaceSelectionChanged = true;
+        }
+      }
 
       void SetChimeOption(ChimesOption chimeOption) {
         if (chimeOption != settings.chimesOption) {
@@ -256,10 +267,14 @@ namespace Pinetime {
       }
 
       void setWakeUpMode(WakeUpMode wakeUp, bool enabled) {
-        if (enabled != isWakeUpModeOn(wakeUp)) {
-          settingsChanged = true;
+        // Accelerometer-based wake is disabled in this custom build. Preserve
+        // legacy stored bits for rollback, but only tap modes may be changed or used.
+        const auto modeIndex = static_cast<size_t>(wakeUp);
+        if (modeIndex > static_cast<size_t>(WakeUpMode::DoubleTap)) {
+          return;
         }
-        settings.wakeUpMode.set(static_cast<size_t>(wakeUp), enabled);
+        const auto previous = settings.wakeUpMode;
+        settings.wakeUpMode.set(modeIndex, enabled);
         // Handle special behavior
         if (enabled) {
           switch (wakeUp) {
@@ -273,14 +288,20 @@ namespace Pinetime {
               break;
           }
         }
+        if (settings.wakeUpMode != previous) {
+          settingsChanged = true;
+        }
       };
 
       std::bitset<5> getWakeUpModes() const {
-        return settings.wakeUpMode;
+        // Ignore old Raise/Shake/Lower settings at the shared consumer boundary.
+        // Keeping SettingsData unchanged lets earlier firmware read the file.
+        return settings.wakeUpMode & std::bitset<5> {0b00011};
       }
 
       bool isWakeUpModeOn(const WakeUpMode mode) const {
-        return getWakeUpModes()[static_cast<size_t>(mode)];
+        const auto index = static_cast<size_t>(mode);
+        return index < getWakeUpModes().size() && getWakeUpModes()[index];
       }
 
       void SetBrightness(Controllers::BrightnessController::Levels level) {
@@ -387,6 +408,8 @@ namespace Pinetime {
 
       SettingsData settings;
       bool settingsChanged = false;
+      WatchFaceSelection watchFaceSelection;
+      bool watchFaceSelectionChanged = false;
 
       uint8_t appMenu = 0;
       uint8_t settingsMenu = 0;
@@ -399,6 +422,8 @@ namespace Pinetime {
 
       void LoadSettingsFromFile();
       void SaveSettingsToFile();
+      void LoadWatchFaceSelection();
+      bool SaveWatchFaceSelection();
     };
   }
 }

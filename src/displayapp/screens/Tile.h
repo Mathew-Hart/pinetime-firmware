@@ -10,7 +10,6 @@
 #include "components/battery/BatteryController.h"
 #include "displayapp/widgets/PageIndicator.h"
 #include "displayapp/widgets/StatusIcons.h"
-#include "utility/DirtyValue.h"
 
 namespace Pinetime {
   namespace Applications {
@@ -35,15 +34,14 @@ namespace Pinetime {
 
         ~Tile() override;
 
-        void Refresh() override;
+        void UpdateScreen();
         void OnValueChangedEvent(lv_obj_t* obj, uint32_t buttonId);
 
       private:
         DisplayApp* app;
-        Utility::DirtyValue<std::chrono::time_point<std::chrono::system_clock, std::chrono::minutes>> currentDateTime {};
         Controllers::DateTime& dateTimeController;
 
-        lv_task_t* taskRefresh;
+        lv_task_t* taskUpdate;
 
         lv_obj_t* label_time;
         lv_obj_t* btnm1;

@@ -1,4 +1,5 @@
 #include "components/datetime/DateTimeController.h"
+#include "components/datetime/WorldClock.h"
 #include <libraries/log/nrf_log.h>
 #include <systemtask/SystemTask.h>
 #include <hal/nrf_rtc.h>
@@ -67,6 +68,10 @@ void DateTime::SetTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, 
 }
 
 void DateTime::SetTimeZone(int8_t timezone, int8_t dst) {
+  hasTimeZone = WorldClock::IsValidTimeZone(timezone, dst);
+  if (!hasTimeZone) {
+    return;
+  }
   tzOffset = timezone;
   dstOffset = dst;
 }

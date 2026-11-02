@@ -1,0 +1,35 @@
+{
+  "result": {
+    "result": "PASS",
+    "assertions": 1012,
+    "actual_gps_codec_store_and_service": true,
+    "concurrent_publish_count": 50000,
+    "chained_mbuf_splits": 21,
+    "phone_actions": []
+  },
+  "sanitizers": [
+    "ASan",
+    "UBSan"
+  ],
+  "boundary_stubs": [
+    "NimBLE GATT registration and chained mbuf",
+    "FreeRTOS tick counter"
+  ],
+  "source_sha256": {
+    "components/ble/GpsData.h": "e23875e1355188803ce19309a4291c4ed9c13d4da186b1d3687a5d8dca3a10fb",
+    "components/ble/GpsService.h": "31b316a945b4cfcc9088e3b95a5a773d0ef0800fbcff8eddbe02e6f05f1692a8",
+    "components/ble/GpsService.cpp": "241ddbc64570a3c514453d9e732544265b87cdea66c3470119362af1343aa641"
+  },
+  "test_sha256": {
+    "gps_test.cpp": "f3e41466b02cdb0b27491531540c65971245a5ab071d30275eb476299fab7e36",
+    "run-native.py": "1204946def050da813e97293a27e41922bdb570c9d7cbf2f67dffdb78c286a0f",
+    "README.md": "8166207c713ba1f3f621bd812196ac420d9713d476dab08938959871603e2084",
+    "stubs/host/ble_gap.h": "1182074b0eb19ed73f2ab6a0fc678d51617ef447d2589a4bd9afa36f1fc1a5f7",
+    "stubs/host/ble_uuid.h": "81c58123b02d0ca15098a1f0a28257d3380c75a2e53e6665e5c77039ce17059d",
+    "stubs/services/gatt/ble_svc_gatt.h": "5746f78b1f74b91f6fbd562a2f07c3da7f4d6e2ea09804d099d4aa848ea81051",
+    "stubs/task.h": "b283832b3a6330cba9492e83c45f2184c82486bcfb00d94c24e0841ec6726d4f"
+  },
+  "warnings_or_errors": false,
+  "uploaded": false,
+  "phone_actions": []
+}

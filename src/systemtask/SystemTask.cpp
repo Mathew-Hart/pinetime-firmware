@@ -66,6 +66,7 @@ SystemTask::SystemTask(Drivers::SpiMaster& spi,
     notificationManager {notificationManager},
     heartRateSensor {heartRateSensor},
     motionSensor {motionSensor},
+    accelDiagnostics {twiMaster, motionSensor},
     settingsController {settingsController},
     heartRateController {heartRateController},
     motionController {motionController},
@@ -140,9 +141,13 @@ void SystemTask::Work() {
   settingsController.Init();
 
   displayApp.Register(this);
+#ifndef PINETIME_IS_RECOVERY
+  displayApp.Register(&accelDiagnostics);
+#endif
   displayApp.Register(&nimbleController.weather());
   displayApp.Register(&nimbleController.music());
   displayApp.Register(&nimbleController.navigation());
+  displayApp.Register(&nimbleController.gps());
   displayApp.Start(bootError);
 
   heartRateSensor.Init();
@@ -310,14 +315,14 @@ void SystemTask::Work() {
           if (state != SystemTaskState::GoingToSleep) {
             break;
           }
+          if (BootloaderVersion::IsValid()) {
+            // First versions of the bootloader do not expose their version and cannot initialize the SPI NOR FLASH
+            // if it's in sleep mode. Avoid bricked device by disabling sleep mode on these versions.
+            spiNorFlash.Sleep();
+          }
 
-          // Must keep SPI and flash awake when still updating the display for always on
+          // Must keep SPI awake when still updating the display for always on
           if (msg == Messages::OnDisplayTaskSleeping) {
-            if (BootloaderVersion::IsValid()) {
-              // First versions of the bootloader do not expose their version and cannot initialize the SPI NOR FLASH
-              // if it's in sleep mode. Avoid bricked device by disabling sleep mode on these versions.
-              spiNorFlash.Sleep();
-            }
             spi.Sleep();
           }
 
@@ -409,13 +414,14 @@ void SystemTask::GoToRunning() {
     // SPI only switched off when entering Sleeping, not AOD or GoingToSleep
     if (state == SystemTaskState::Sleeping) {
       spi.Wakeup();
-      spiNorFlash.Wakeup();
     }
 
     // Double Tap needs the touch screen to be in normal mode
     if (!settingsController.isWakeUpModeOn(Pinetime::Controllers::Settings::WakeUpMode::DoubleTap)) {
       touchPanel.Wakeup();
     }
+
+    spiNorFlash.Wakeup();
   }
 
   displayApp.PushMessage(Pinetime::Applications::Display::Messages::GoToRunning);
@@ -460,10 +466,11 @@ void SystemTask::UpdateMotion() {
         (settingsController.isWakeUpModeOn(Pinetime::Controllers::Settings::WakeUpMode::Shake) &&
          motionController.CurrentShakeSpeed() > settingsController.GetShakeThreshold())) {
       GoToRunning();
-    } else if (settingsController.isWakeUpModeOn(Pinetime::Controllers::Settings::WakeUpMode::LowerWrist) &&
-               state == SystemTaskState::Running && motionController.ShouldLowerSleep()) {
-      GoToSleep();
     }
+  }
+  if (settingsController.isWakeUpModeOn(Pinetime::Controllers::Settings::WakeUpMode::LowerWrist) && state == SystemTaskState::Running &&
+      motionController.ShouldLowerSleep()) {
+    GoToSleep();
   }
 }
 

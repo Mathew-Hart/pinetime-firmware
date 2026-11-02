@@ -4,6 +4,7 @@
 #include "displayapp/screens/Motion.h"
 #include "displayapp/screens/Timer.h"
 #include "displayapp/screens/Alarm.h"
+#include "displayapp/screens/ClockTools.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/datetime/DateTimeController.h"
@@ -13,8 +14,6 @@
 #include "displayapp/screens/ApplicationList.h"
 #include "displayapp/screens/FirmwareUpdate.h"
 #include "displayapp/screens/FirmwareValidation.h"
-#include "displayapp/screens/InfiniPaint.h"
-#include "displayapp/screens/Paddle.h"
 #include "displayapp/screens/StopWatch.h"
 #include "displayapp/screens/Metronome.h"
 #include "displayapp/screens/Music.h"
@@ -22,11 +21,8 @@
 #include "displayapp/screens/Notifications.h"
 #include "displayapp/screens/SystemInfo.h"
 #include "displayapp/screens/Tile.h"
-#include "displayapp/screens/Twos.h"
 #include "displayapp/screens/FlashLight.h"
 #include "displayapp/screens/BatteryInfo.h"
-#include "displayapp/screens/Steps.h"
-#include "displayapp/screens/Dice.h"
 #include "displayapp/screens/Weather.h"
 #include "displayapp/screens/PassKey.h"
 #include "displayapp/screens/Error.h"
@@ -45,11 +41,9 @@
 #include "displayapp/screens/settings/SettingWeatherFormat.h"
 #include "displayapp/screens/settings/SettingWakeUp.h"
 #include "displayapp/screens/settings/SettingDisplay.h"
-#include "displayapp/screens/settings/SettingSteps.h"
 #include "displayapp/screens/settings/SettingSetDateTime.h"
 #include "displayapp/screens/settings/SettingChimes.h"
 #include "displayapp/screens/settings/SettingHeartRate.h"
-#include "displayapp/screens/settings/SettingShakeThreshold.h"
 #include "displayapp/screens/settings/SettingBluetooth.h"
 #include "displayapp/screens/settings/SettingOTA.h"
 
@@ -57,6 +51,8 @@
 
 #include "libs/lv_conf.h"
 #include "UserApps.h"
+#include "WatchFaceNavigation.h"
+#include "ClockToolsNavigation.h"
 
 #include <algorithm>
 #include <limits>
@@ -309,6 +305,9 @@ void DisplayApp::Refresh() {
         if (state != States::Running || !systemTask->IsSleeping()) {
           break;
         }
+        // Set the target visibility before a possible Clock replacement below.
+        // A clock loaded while powering the panel off must never start sampling.
+        SetScreenDisplayed(msg == Messages::GoToAOD);
         while (brightnessController.Level() != Controllers::BrightnessController::Levels::Low) {
           brightnessController.Lower();
           vTaskDelay(100);
@@ -320,11 +319,9 @@ void DisplayApp::Refresh() {
           brightnessController.Set(Controllers::BrightnessController::Levels::Off);
         }
         // Since the active screen is not really an app, go back to Clock.
-        if (currentApp == Apps::Launcher || currentApp == Apps::Notifications || currentApp == Apps::NotificationsPreview ||
-            currentApp == Apps::QuickSettings || currentApp == Apps::Settings) {
+        if (currentApp == Apps::Launcher || currentApp == Apps::Notifications || currentApp == Apps::QuickSettings ||
+            currentApp == Apps::Settings) {
           LoadScreen(Apps::Clock, DisplayApp::FullRefreshDirections::None);
-          appStackDirections.Reset();
-          returnAppStack.Reset();
           // Wait for the clock app to load before moving on.
           while (!lv_task_handler()) {
           };
@@ -364,6 +361,7 @@ void DisplayApp::Refresh() {
         lv_disp_trig_activity(nullptr);
         ApplyBrightness();
         state = States::Running;
+        SetScreenDisplayed(true);
         break;
       case Messages::UpdateBleConnection:
         // Only used for recovery firmware
@@ -387,6 +385,10 @@ void DisplayApp::Refresh() {
         break;
       }
       case Messages::AlarmTriggered:
+        if (state != States::Running) {
+          PushMessageToSystemTask(System::Messages::GoToRunning);
+        }
+        lv_disp_trig_activity(nullptr);
         if (currentApp == Apps::Alarm) {
           auto* alarm = static_cast<Screens::Alarm*>(currentScreen.get());
           alarm->SetAlerting();
@@ -431,6 +433,15 @@ void DisplayApp::Refresh() {
                 break;
               case TouchEvents::SwipeRight:
                 LoadNewScreen(Apps::QuickSettings, DisplayApp::FullRefreshDirections::RightAnim);
+                break;
+              case TouchEvents::SwipeLeft:
+                if (const auto next = NextAvailableWatchFace(userWatchFaces, settingsController.GetWatchFace(), [this](const auto& face) {
+                      return settingsController.IsWatchFaceEnabled(face.watchFace) && face.isAvailable(filesystem);
+                    })) {
+                  settingsController.SetWatchFace(*next);
+                  settingsController.SaveSettings();
+                  LoadNewScreen(Apps::Clock, DisplayApp::FullRefreshDirections::LeftAnim);
+                }
                 break;
               case TouchEvents::DoubleTap:
                 PushMessageToSystemTask(System::Messages::GoToSleep);
@@ -509,9 +520,21 @@ void DisplayApp::LoadNewScreen(Apps app, DisplayApp::FullRefreshDirections direc
   // Don't add the same screen to the stack back to back.
   // This is mainly to fix an issue with receiving two notifications at the same time
   // and shouldn't happen otherwise.
-  if (app != currentApp) {
-    returnAppStack.Push(currentApp);
-    appStackDirections.Push(direction);
+  switch (RouteClockTool(currentApp, app)) {
+    case ClockToolsRoute::InsertChooser:
+      returnAppStack.Push(currentApp);
+      appStackDirections.Push(direction);
+      returnAppStack.Push(Apps::ClockTools);
+      appStackDirections.Push(FullRefreshDirections::Up);
+      break;
+    case ClockToolsRoute::ReplaceTool:
+      break;
+    case ClockToolsRoute::Normal:
+      if (app != currentApp) {
+        returnAppStack.Push(currentApp);
+        appStackDirections.Push(direction);
+      }
+      break;
   }
   LoadScreen(app, direction);
 }
@@ -521,6 +544,9 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
   lv_disp_trig_activity(nullptr);
   motorController.StopRinging();
 
+  if (currentScreen != nullptr) {
+    currentScreen->OnDisplayStateChanged(false);
+  }
   currentScreen.reset(nullptr);
   SetFullRefresh(direction);
 
@@ -546,12 +572,27 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
       if (watchFace != userWatchFaces.end()) {
         currentScreen.reset(watchFace->create(controllers));
       } else {
+        // A saved face can be absent from a custom build; keep the selection in sync with the fallback.
+        settingsController.SetWatchFace(userWatchFaces[0].watchFace);
+        settingsController.SaveSettings();
         currentScreen.reset(userWatchFaces[0].create(controllers));
       }
       settingsController.SetAppMenu(0);
     } break;
     case Apps::Error:
       currentScreen = std::make_unique<Screens::Error>(bootError);
+      break;
+
+    // These are child routes of ClockTools, not separate launcher entries.
+    // Keep their concrete screens so alert handlers can safely address them.
+    case Apps::Alarm:
+      currentScreen = std::make_unique<Screens::Alarm>(alarmController, settingsController.GetClockType(), *systemTask, motorController);
+      break;
+    case Apps::Timer:
+      currentScreen = std::make_unique<Screens::Timer>(timer, motorController, *systemTask, &timerEditorState);
+      break;
+    case Apps::StopWatch:
+      currentScreen = std::make_unique<Screens::StopWatch>(*systemTask, stopWatchController);
       break;
 
     case Apps::FirmwareValidation:
@@ -601,7 +642,7 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
                                                 userWatchFace.watchFace,
                                                 userWatchFace.isAvailable(controllers.filesystem)};
       });
-      currentScreen = std::make_unique<Screens::SettingWatchFace>(this, std::move(items), settingsController, filesystem);
+      currentScreen = std::make_unique<Screens::SettingWatchFace>(this, std::move(items), settingsController);
     } break;
     case Apps::SettingTimeFormat:
       currentScreen = std::make_unique<Screens::SettingTimeFormat>(settingsController);
@@ -618,17 +659,11 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
     case Apps::SettingDisplay:
       currentScreen = std::make_unique<Screens::SettingDisplay>(settingsController);
       break;
-    case Apps::SettingSteps:
-      currentScreen = std::make_unique<Screens::SettingSteps>(settingsController);
-      break;
     case Apps::SettingSetDateTime:
       currentScreen = std::make_unique<Screens::SettingSetDateTime>(this, dateTimeController, settingsController);
       break;
     case Apps::SettingChimes:
       currentScreen = std::make_unique<Screens::SettingChimes>(settingsController);
-      break;
-    case Apps::SettingShakeThreshold:
-      currentScreen = std::make_unique<Screens::SettingShakeThreshold>(settingsController, motionController, *systemTask);
       break;
     case Apps::SettingBluetooth:
       currentScreen = std::make_unique<Screens::SettingBluetooth>(this, settingsController);
@@ -666,6 +701,17 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
     }
   }
   currentApp = app;
+  currentScreen->OnDisplayStateChanged(screenDisplayed);
+}
+
+void DisplayApp::SetScreenDisplayed(bool displayed) {
+  if (screenDisplayed == displayed) {
+    return;
+  }
+  screenDisplayed = displayed;
+  if (currentScreen != nullptr) {
+    currentScreen->OnDisplayStateChanged(displayed);
+  }
 }
 
 void DisplayApp::PushMessage(Messages msg) {
@@ -717,6 +763,10 @@ void DisplayApp::PushMessageToSystemTask(Pinetime::System::Messages message) {
   }
 }
 
+void DisplayApp::Register(Pinetime::Drivers::AccelDiagnostics* diagnostics) {
+  controllers.accelDiagnostics = diagnostics;
+}
+
 void DisplayApp::Register(Pinetime::System::SystemTask* systemTask) {
   this->systemTask = systemTask;
   this->controllers.systemTask = systemTask;
@@ -732,6 +782,10 @@ void DisplayApp::Register(Pinetime::Controllers::MusicService* musicService) {
 
 void DisplayApp::Register(Pinetime::Controllers::NavigationService* NavigationService) {
   this->controllers.navigationService = NavigationService;
+}
+
+void DisplayApp::Register(Pinetime::Controllers::GpsService* gpsService) {
+  this->controllers.gpsService = gpsService;
 }
 
 void DisplayApp::ApplyBrightness() {

@@ -1,6 +1,10 @@
 #pragma once
 
 namespace Pinetime {
+  namespace Drivers {
+    class AccelDiagnostics;
+  }
+
   namespace Applications {
     class DisplayApp;
   }
@@ -26,6 +30,7 @@ namespace Pinetime {
     class Timer;
     class MusicService;
     class NavigationService;
+    class GpsService;
   }
 
   namespace System {
@@ -53,6 +58,8 @@ namespace Pinetime {
       Pinetime::Components::LittleVgl& lvgl;
       Pinetime::Controllers::MusicService* musicService;
       Pinetime::Controllers::NavigationService* navigationService;
+      Pinetime::Drivers::AccelDiagnostics* accelDiagnostics = nullptr;
+      Pinetime::Controllers::GpsService* gpsService = nullptr;
     };
   }
 }

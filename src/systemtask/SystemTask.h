@@ -9,6 +9,7 @@
 #include <heartratetask/HeartRateTask.h>
 #include <components/settings/Settings.h>
 #include <drivers/Bma421.h>
+#include "drivers/AccelDiagnostics.h"
 #include <drivers/PinMap.h>
 #include <components/motion/MotionController.h>
 
@@ -117,6 +118,7 @@ namespace Pinetime {
       Pinetime::Controllers::NotificationManager& notificationManager;
       Pinetime::Drivers::Hrs3300& heartRateSensor;
       Pinetime::Drivers::Bma421& motionSensor;
+      Pinetime::Drivers::AccelDiagnostics accelDiagnostics;
       Pinetime::Controllers::Settings& settingsController;
       Pinetime::Controllers::HeartRateController& heartRateController;
       Pinetime::Controllers::MotionController& motionController;

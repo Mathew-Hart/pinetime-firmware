@@ -1,0 +1,90 @@
+{
+  "result": "PASS",
+  "assertions": 180,
+  "actual_lvgl_pointer_clicks": true,
+  "actual_settings_cpp": true,
+  "production_cycle_helper": true,
+  "pages": [
+    4,
+    4,
+    1
+  ],
+  "configured_ids": [
+    0,
+    1,
+    3,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "removed_ids": [
+    2,
+    4,
+    5,
+    6
+  ],
+  "phone_actions": [],
+  "source_sha256": {
+    "components/settings/Settings.h": "d4d68d5ddfcf0b4ab3b9ca71c72244d7414d16a1cc4a173a13e4ca1040265a31",
+    "components/settings/Settings.cpp": "5c2e987b110058a15f93a8aba01c010d0728af650574f27b984b48f560f9a3f0",
+    "components/settings/WatchFaceSelection.h": "37db09bfbc2927d7fff39daf07df6c6eb49f7bcfefeb36bb8c1634626217271a",
+    "displayapp/WatchFaceNavigation.h": "cb18844ec3244fb6b3b4deba25d53c89333dbe830ac2ab593625d196a4c515ee",
+    "displayapp/screens/settings/SettingWatchFace.h": "06db858401becb5c3c9eee054aea35e80386d839b4491072808dc8cbb75d822e",
+    "displayapp/screens/settings/SettingWatchFace.cpp": "cff1d21f85194d9ba623d70fac7bd4d914ebf692d5ea68a10a054ad1d14501b7",
+    "displayapp/screens/ScreenList.h": "5c0b720bb9ea45fea174a14d724a7c1cc8417c0e7be84139c0b4ca3528245711",
+    "displayapp/widgets/PageIndicator.cpp": "0dfb7e3f982f5d3e17df3e12eb8521fdebdd530b652d7f3481c01e9d79756515",
+    "displayapp/apps/Apps.h.in": "6cccb0de224c5142002c1996833efaa3a2e843a4728dd6a20d6ee88aad152a6d",
+    "displayapp/apps/CMakeLists.txt": "26b874a1ea66b19ce8bbb2b08b284899d62ca1bd4694b87c780cc4560824d70b",
+    "displayapp/InfiniTimeTheme.cpp": "f1483e99ef21c1d92c1730ccd19e02ddd20b4384e2980e9400c83ff922ff58ae",
+    "libs/lv_conf.h": "e95f8b04a319c127482ed6a9c537deffad7db27ea14ae67dd6b14924fe649415"
+  },
+  "test_sha256": {
+    "CMakeLists.txt": "d54450a206fad5de292d81a9a9cb3a486ecb0c6726181437192bca81a2a07d0d",
+    "README.md": "366a76e42e125b58ef133957f4df90c0781482fc5dd431976e23d34bae25daf4",
+    "render-png.py": "61073e11179bfb389eb08fc69ca05771ad1b8a198a5d07b9b8f629acacb33434",
+    "run-ui.sh": "5669fe2d3996643adf2516cf82413a83c384a8752731bb5e5c45b75ca57adb42",
+    "selection_test.cpp": "4d958f67cdf6c7f5ffb62cf4658e4d3ef3ab1197e35ed09adcacb0cada5a9e0e",
+    "stubs/components/brightness/BrightnessController.h": "c510cced44987fcc142ba13cc289d8950b162db3b98b5b364ab1d98e31261883",
+    "stubs/components/fs/FS.h": "ec75b8cb0ec0cacb31bd8e5998f3d4b85db59c24012c3adb5aa6ffbb0abdcd6c",
+    "stubs/displayapp/DisplayApp.h": "b2c4c1053776110bc73fa23b14f8d25a20a4c44a6c0a40358fc9a9634b138e68",
+    "stubs/nrf_log.h": "69511615018bfe0ab23a3ace797c5e746c618dc0a5067a906b4c2219791a3cc1"
+  },
+  "support_sha256": {
+    "tests/record-ui-receipt.py": "f00eabe7cf3aa9f0779a6fb97207818b1b28e62867242daed15bff1c8c374732",
+    "host/FreeRTOS.h": "5d27fa7e0c83e412e0282e5ae96633ce3baf5e87450004fe9ddd1f3e06953e3a"
+  },
+  "render_sha256": {
+    "contact-sheet.png": "d033cf6161999ad92c173b0838163fdd172d3847f919cf601bf1cecfece1a5fa",
+    "page1-four-retained-3x.png": "734a91e5036986b5cd2b281f991af95e3bf3272528ce8f953bc46cdf3360e05b",
+    "page1-four-retained.png": "e090c104a691f1db0ed04d192912798c9de645c3a41e3dd3bde3a968fe63b170",
+    "page2-four-retained-3x.png": "62c4047f5319dbf9b5115daea2079078ea22a731a5cdf7203fcc24397c36e472",
+    "page2-four-retained.png": "7695041a9ca08d50f2cca8d208f6916cd50493a9351dc6b704d1923d886f7b53",
+    "page3-gps-default-3x.png": "de74219fab57bea25fb0bd7d2523b6c5db872b5ae1db9106b96cfba5aeb35690",
+    "page3-gps-default.png": "c75ce89e77112b41a8a9548e7daa14a3263031f46eab0505398f2d99a5c2a053",
+    "page3-gps-disabled-3x.png": "e27f48a1c9e1d4392c01c0b8ff15f0709b2f5d1df4d7054b2602d6384e73a3cc",
+    "page3-gps-disabled.png": "1cf69e83ea8b63e0aa886680a9440078b7b0ef041d073d88f07e1e368e1a3ab1"
+  },
+  "generated_font_input_sha256": {
+    "displayapp/fonts/fontawesome_weathericons.c": "d2065ee2d75185ddfea4db53825342802e4bd0076f866aa828916ffd3eb3c075",
+    "displayapp/fonts/jetbrains_mono_42.c": "7b40937bb27d3c5480bfaf0cad6574ca3e90f5a63edeacdc1fe0f52ebe0bbf7a",
+    "displayapp/fonts/jetbrains_mono_76.c": "3f614d0e5f0d953dcbce9262d9066f0887d2a6ab1deca00867e3ad647eb85151",
+    "displayapp/fonts/jetbrains_mono_bold_20.c": "478d7d807a3c656f8e39ef66d79e04723e0c9c53b170369ffe21af191d99a358",
+    "displayapp/fonts/jetbrains_mono_extrabold_compressed.c": "2cc5c88158985e2ad55503b743d060af8fdd17ed6e9c7e17c13580e83f77cebf",
+    "displayapp/fonts/lv_font_sys_48.c": "8b8a4588472fee9ca9b7508de690feeb294617c0b6300afd8e653275cd78ac63",
+    "displayapp/fonts/open_sans_light.c": "f0cf20175c518434128c450fd5582be6c42646bcb5a8869df118639105157862",
+    "displayapp/fonts/solar_text_18.c": "d10909dcf5eb655cd76bf3db2a6492db3364ac11dfecfc25fc2e8746b8086d24",
+    "displayapp/fonts/solar_time_42.c": "5a06e33d3ea4d5ea4bb79130febfaa005cc3981d4729ad13a8f6cddea55029d8",
+    "displayapp/fonts/weather_dots_17.c": "9fd3157a837faae5a0f4e679754ff555a0b05c950402ecc0e87fd36d75016cc0",
+    "displayapp/fonts/weather_segments_24.c": "fccf0bec98eb90c3738ba6f32666ce0a10c79be7c3b0c1339920e8960667df84",
+    "displayapp/fonts/weather_segments_36.c": "48a4f3464006a84c6b920139e99962ddfaf5bd6d722c7eca1a558e98131e7d76",
+    "displayapp/fonts/weather_segments_90.c": "1161db76b020fc75f4177f44a6210c268db4df11551cccdcf7fbf217e4d4ab0f",
+    "displayapp/fonts/weather_small_12.c": "f831121befbb19578ae1b2b1f2b6486f10fdd6719a9da06fd48ca23719644192"
+  },
+  "generated_fonts_relative_to": "PINETIME_BUILD_DIR/src",
+  "firmware_version": "1.16.1-wf4",
+  "warnings": 0,
+  "uploaded": false
+}

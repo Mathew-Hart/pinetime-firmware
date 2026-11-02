@@ -22,6 +22,7 @@
 
 #include "utility/StaticStack.h"
 #include "displayapp/Controllers.h"
+#include "displayapp/TimerEditorState.h"
 
 namespace Pinetime {
 
@@ -78,9 +79,11 @@ namespace Pinetime {
       void SetFullRefresh(FullRefreshDirections direction);
 
       void Register(Pinetime::System::SystemTask* systemTask);
+      void Register(Pinetime::Drivers::AccelDiagnostics* diagnostics);
       void Register(Pinetime::Controllers::SimpleWeatherService* weatherService);
       void Register(Pinetime::Controllers::MusicService* musicService);
       void Register(Pinetime::Controllers::NavigationService* NavigationService);
+      void Register(Pinetime::Controllers::GpsService* gpsService);
 
     private:
       Pinetime::Drivers::St7789& lcd;
@@ -105,11 +108,13 @@ namespace Pinetime {
       Pinetime::Controllers::FirmwareValidator validator;
       Pinetime::Components::LittleVgl lvgl;
       Pinetime::Controllers::Timer timer;
+      TimerEditorState timerEditorState;
 
       AppControllers controllers;
       TaskHandle_t taskHandle;
 
       States state = States::Running;
+      bool screenDisplayed = true;
       QueueHandle_t msgQueue;
 
       static constexpr uint8_t queueSize = 10;
@@ -128,6 +133,7 @@ namespace Pinetime {
       void Refresh();
       void LoadNewScreen(Apps app, DisplayApp::FullRefreshDirections direction);
       void LoadScreen(Apps app, DisplayApp::FullRefreshDirections direction);
+      void SetScreenDisplayed(bool displayed);
       void PushMessageToSystemTask(Pinetime::System::Messages message);
 
       Apps nextApp = Apps::None;

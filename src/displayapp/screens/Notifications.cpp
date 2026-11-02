@@ -55,6 +55,7 @@ Notifications::Notifications(DisplayApp* app,
 
     lv_line_set_points(timeoutLine, timeoutLinePoints, 2);
     timeoutTickCountStart = xTaskGetTickCount();
+    interacted = false;
   }
 
   taskRefresh = lv_task_create(RefreshTaskCallback, LV_DISP_DEF_REFR_PERIOD, LV_TASK_PRIO_MID, this);
@@ -120,7 +121,6 @@ void Notifications::Refresh() {
 void Notifications::OnPreviewInteraction() {
   wakeLock.Release();
   motorController.StopRinging();
-  mode = Modes::Normal;
   if (timeoutLine != nullptr) {
     lv_obj_del(timeoutLine);
     timeoutLine = nullptr;
@@ -147,15 +147,16 @@ void Notifications::OnPreviewDismiss() {
 }
 
 bool Notifications::OnTouchEvent(Pinetime::Applications::TouchEvents event) {
-  if (mode == Modes::Preview) {
-    if (event == TouchEvents::Tap || event == TouchEvents::SwipeDown) {
+  if (mode != Modes::Normal) {
+    if (!interacted && event == TouchEvents::Tap) {
+      interacted = true;
       OnPreviewInteraction();
+      return true;
     } else if (event == Pinetime::Applications::TouchEvents::SwipeRight) {
       OnPreviewDismiss();
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   switch (event) {
@@ -172,7 +173,7 @@ bool Notifications::OnTouchEvent(Pinetime::Applications::TouchEvents event) {
         } else {
           // don't update id, notification manager will try to fetch
           // but not find it. Refresh will try to load latest message
-          // or dismiss to previous screen
+          // or dismiss to watchface
         }
         DismissToBlack();
         return true;

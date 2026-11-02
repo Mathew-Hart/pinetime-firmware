@@ -53,7 +53,9 @@ void FSService::Init() {
 int FSService::OnFSServiceRequested(uint16_t connectionHandle, uint16_t attributeHandle, ble_gatt_access_ctxt* context) {
 #ifndef PINETIME_IS_RECOVERY
   if (systemTask.GetSettings().GetDfuAndFsMode() == Pinetime::Controllers::Settings::DfuAndFsMode::Disabled) {
-    Pinetime::Controllers::NotificationManager::Notification notif(denyAlert, denyAlertLength);
+    Pinetime::Controllers::NotificationManager::Notification notif;
+    memcpy(notif.message.data(), denyAlert, denyAlertLength);
+    notif.size = denyAlertLength;
     notif.category = Pinetime::Controllers::NotificationManager::Categories::SimpleAlert;
     systemTask.GetNotificationManager().Push(std::move(notif));
     systemTask.PushMessage(Pinetime::System::Messages::OnNewNotification);

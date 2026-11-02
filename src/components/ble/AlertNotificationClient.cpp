@@ -156,7 +156,10 @@ void AlertNotificationClient::OnNotification(ble_gap_event* event) {
     size_t bufferSize = std::min(packetLen + stringTerminatorSize, maxBufferSize);
     auto messageSize = std::min(maxMessageSize, (bufferSize - headerSize));
 
-    NotificationManager::Notification notif(event->notify_rx.om, headerSize, messageSize);
+    NotificationManager::Notification notif;
+    os_mbuf_copydata(event->notify_rx.om, headerSize, messageSize - 1, notif.message.data());
+    notif.message[messageSize - 1] = '\0';
+    notif.size = messageSize;
     notif.category = Pinetime::Controllers::NotificationManager::Categories::SimpleAlert;
     notificationManager.Push(std::move(notif));
 

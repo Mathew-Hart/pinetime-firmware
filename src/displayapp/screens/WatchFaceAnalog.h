@@ -5,6 +5,9 @@
 #include <cstdint>
 #include <memory>
 #include "displayapp/screens/Screen.h"
+#include "displayapp/Controllers.h"
+#include "displayapp/apps/Apps.h"
+#include "displayapp/screens/AnalogWeather.h"
 #include "components/datetime/DateTimeController.h"
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
@@ -18,6 +21,8 @@ namespace Pinetime {
     class Battery;
     class Ble;
     class NotificationManager;
+    class SimpleWeatherService;
+    class HeartRateController;
   }
 
   namespace Applications {
@@ -29,11 +34,16 @@ namespace Pinetime {
                         const Controllers::Battery& batteryController,
                         const Controllers::Ble& bleController,
                         Controllers::NotificationManager& notificationManager,
-                        Controllers::Settings& settingsController);
+                        Controllers::Settings& settingsController,
+                        Controllers::SimpleWeatherService& weatherService,
+                        Controllers::HeartRateController& heartRateController,
+                        DisplayApp& displayApp);
 
         ~WatchFaceAnalog() override;
 
         void Refresh() override;
+        bool OnTouchEvent(TouchEvents event) override;
+        void OnDisplayStateChanged(bool visible) override;
 
       private:
         uint8_t sHour, sMinute, sSecond;
@@ -72,6 +82,9 @@ namespace Pinetime {
         lv_obj_t* plugIcon;
         lv_obj_t* notificationIcon;
         lv_obj_t* bleIcon;
+        lv_obj_t* heartRateIcon;
+        lv_obj_t* labelHeartRate;
+        uint8_t heartRateAppearance = 0xff;
 
         BatteryIcon batteryIcon;
 
@@ -80,6 +93,9 @@ namespace Pinetime {
         const Controllers::Ble& bleController;
         Controllers::NotificationManager& notificationManager;
         Controllers::Settings& settingsController;
+        Controllers::SimpleWeatherService& weatherService;
+        Controllers::HeartRateController& heartRateController;
+        std::unique_ptr<AnalogWeather> weather;
 
         void UpdateClock();
         void SetBatteryIcon();
@@ -98,7 +114,10 @@ namespace Pinetime {
                                             controllers.batteryController,
                                             controllers.bleController,
                                             controllers.notificationManager,
-                                            controllers.settingsController);
+                                            controllers.settingsController,
+                                            *controllers.weatherController,
+                                            controllers.heartRateController,
+                                            *controllers.displayApp);
       };
 
       static bool IsAvailable(Pinetime::Controllers::FS& /*filesystem*/) {

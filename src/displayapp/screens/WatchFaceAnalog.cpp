@@ -1,12 +1,17 @@
 #include "displayapp/screens/WatchFaceAnalog.h"
 #include <cmath>
 #include <limits>
+#include <cstdio>
+#include <cstring>
 #include <lvgl/lvgl.h>
 #include "displayapp/screens/BatteryIcon.h"
 #include "displayapp/screens/BleIcon.h"
 #include "displayapp/screens/Symbols.h"
 #include "displayapp/screens/NotificationIcon.h"
 #include "components/settings/Settings.h"
+#include "components/ble/SimpleWeatherService.h"
+#include "components/heartrate/HeartRateController.h"
+#include "displayapp/DisplayApp.h"
 #include "displayapp/InfiniTimeTheme.h"
 
 using namespace Pinetime::Applications::Screens;
@@ -48,14 +53,19 @@ WatchFaceAnalog::WatchFaceAnalog(Controllers::DateTime& dateTimeController,
                                  const Controllers::Battery& batteryController,
                                  const Controllers::Ble& bleController,
                                  Controllers::NotificationManager& notificationManager,
-                                 Controllers::Settings& settingsController)
+                                 Controllers::Settings& settingsController,
+                                 Controllers::SimpleWeatherService& weatherService,
+                                 Controllers::HeartRateController& heartRateController,
+                                 DisplayApp& displayApp)
   : currentDateTime {{}},
     batteryIcon(true),
     dateTimeController {dateTimeController},
     batteryController {batteryController},
     bleController {bleController},
     notificationManager {notificationManager},
-    settingsController {settingsController} {
+    settingsController {settingsController},
+    weatherService {weatherService},
+    heartRateController {heartRateController} {
 
   sHour = 99;
   sMinute = 99;
@@ -111,7 +121,7 @@ WatchFaceAnalog::WatchFaceAnalog(Controllers::DateTime& dateTimeController,
   notificationIcon = lv_label_create(lv_scr_act(), nullptr);
   lv_obj_set_style_local_text_color(notificationIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_LIME);
   lv_label_set_text_static(notificationIcon, NotificationIcon::GetIcon(false));
-  lv_obj_align(notificationIcon, nullptr, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+  lv_obj_align(notificationIcon, nullptr, LV_ALIGN_IN_BOTTOM_RIGHT, -6, -6);
 
   // Date - Day / Week day
 
@@ -157,13 +167,36 @@ WatchFaceAnalog::WatchFaceAnalog(Controllers::DateTime& dateTimeController,
   lv_style_set_line_rounded(&hour_line_style_trace, LV_STATE_DEFAULT, false);
   lv_obj_add_style(hour_body_trace, LV_LINE_PART_MAIN, &hour_line_style_trace);
 
+  weather = std::make_unique<AnalogWeather>(lv_scr_act(), [](void* context) {
+    static_cast<DisplayApp*>(context)->StartApp(Apps::Weather, DisplayApp::FullRefreshDirections::Up);
+  }, &displayApp);
+
+  // Keep these above the clock hands just like the weather complication. They
+  // are read-only: the clock's bottom-left gestures retain their normal action.
+  heartRateIcon = lv_label_create(lv_scr_act(), nullptr);
+  lv_label_set_text_static(heartRateIcon, Symbols::heartBeat);
+  lv_obj_set_style_local_text_color(heartRateIcon, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
+  lv_obj_set_click(heartRateIcon, false);
+  lv_obj_set_pos(heartRateIcon, 6, 208);
+
+  labelHeartRate = lv_label_create(lv_scr_act(), nullptr);
+  lv_obj_set_style_local_text_font(labelHeartRate, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, &jetbrains_mono_bold_20);
+  lv_obj_set_style_local_text_letter_space(labelHeartRate, LV_LABEL_PART_MAIN, LV_STATE_DEFAULT, 0);
+  lv_label_set_text_static(labelHeartRate, "--");
+  lv_obj_set_click(labelHeartRate, false);
+  lv_obj_set_pos(labelHeartRate, 31, 208);
+
   taskRefresh = lv_task_create(RefreshTaskCallback, LV_DISP_DEF_REFR_PERIOD, LV_TASK_PRIO_MID, this);
 
   Refresh();
 }
 
 WatchFaceAnalog::~WatchFaceAnalog() {
+  // Also release visibility when another screen replaces this face. This is
+  // idempotent with the DisplayApp visibility callback on an ordinary sleep.
+  heartRateController.SetAnalogFaceVisible(false);
   lv_task_del(taskRefresh);
+  weather.reset();
 
   lv_style_reset(&hour_line_style);
   lv_style_reset(&hour_line_style_trace);
@@ -172,6 +205,16 @@ WatchFaceAnalog::~WatchFaceAnalog() {
   lv_style_reset(&second_line_style);
 
   lv_obj_clean(lv_scr_act());
+}
+
+void WatchFaceAnalog::OnDisplayStateChanged(bool visible) {
+  heartRateController.SetAnalogFaceVisible(visible);
+}
+
+bool WatchFaceAnalog::OnTouchEvent(TouchEvents event) {
+  weather->OnTouchEvent(event);
+  // DisplayApp retains the clock's swipe, long-press and double-tap actions.
+  return false;
 }
 
 void WatchFaceAnalog::UpdateClock() {
@@ -222,6 +265,35 @@ void WatchFaceAnalog::SetBatteryIcon() {
 }
 
 void WatchFaceAnalog::Refresh() {
+  const auto heartRateSample = heartRateController.GetAnalogFaceSample();
+  char heartRateText[4];
+  if (heartRateSample.valid) {
+    std::snprintf(heartRateText, sizeof(heartRateText), "%u", static_cast<unsigned>(heartRateSample.heartRate));
+  } else {
+    std::snprintf(heartRateText, sizeof(heartRateText), "--");
+  }
+  if (std::strcmp(heartRateText, lv_label_get_text(labelHeartRate)) != 0) {
+    lv_label_set_text(labelHeartRate, heartRateText);
+  }
+  // The placeholder is aqua while a brief sample is in progress. It turns gray
+  // when no valid reading is available; an accepted result remains white.
+  const uint8_t appearance = heartRateSample.valid ? 2 : (heartRateSample.measuring ? 1 : 0);
+  if (appearance != heartRateAppearance) {
+    heartRateAppearance = appearance;
+    lv_obj_set_style_local_text_color(labelHeartRate,
+                                    LV_LABEL_PART_MAIN,
+                                    LV_STATE_DEFAULT,
+                                    heartRateSample.valid ? LV_COLOR_WHITE : (heartRateSample.measuring ? LV_COLOR_AQUA : LV_COLOR_GRAY));
+  }
+
+  const bool imperial = settingsController.GetWeatherFormat() == Controllers::Settings::WeatherFormat::Imperial;
+  const auto currentWeather = weatherService.Current();
+  std::optional<int16_t> temperature;
+  if (currentWeather) {
+    temperature = imperial ? currentWeather->temperature.Fahrenheit() : currentWeather->temperature.Celsius();
+  }
+  weather->SetTemperature(temperature, imperial);
+
   isCharging = batteryController.IsCharging();
   if (isCharging.IsUpdated()) {
     if (isCharging.Get()) {
@@ -253,6 +325,7 @@ void WatchFaceAnalog::Refresh() {
 
   if (notificationState.IsUpdated()) {
     lv_label_set_text_static(notificationIcon, NotificationIcon::GetIcon(notificationState.Get()));
+    lv_obj_align(notificationIcon, nullptr, LV_ALIGN_IN_BOTTOM_RIGHT, -6, -6);
   }
 
   currentDateTime = dateTimeController.CurrentDateTime();

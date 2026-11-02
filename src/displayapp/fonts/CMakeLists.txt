@@ -1,9 +1,14 @@
 set(FONTS jetbrains_mono_42 jetbrains_mono_76 jetbrains_mono_bold_20
    jetbrains_mono_extrabold_compressed lv_font_sys_48
-   open_sans_light fontawesome_weathericons)
+   open_sans_light fontawesome_weathericons weather_segments_90 weather_segments_36
+   weather_segments_24 weather_dots_17 weather_small_12 solar_time_42 solar_text_18)
 find_program(LV_FONT_CONV "lv_font_conv" NO_CACHE REQUIRED
    HINTS "${CMAKE_SOURCE_DIR}/node_modules/.bin")
 message(STATUS "Using ${LV_FONT_CONV} to generate font files")
+configure_file(${CMAKE_CURRENT_LIST_DIR}/jetbrains_mono_bold_20.c_zero.patch
+   ${CMAKE_CURRENT_BINARY_DIR}/jetbrains_mono_bold_20.c_zero.patch COPYONLY)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/jetbrains_mono_bold_20.c_M.patch
+   ${CMAKE_CURRENT_BINARY_DIR}/jetbrains_mono_bold_20.c_M.patch COPYONLY)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.12)
    # FindPython3 module introduces with CMake 3.12
    # https://cmake.org/cmake/help/latest/module/FindPython3.html

@@ -8,9 +8,6 @@
 #include "components/settings/Settings.h"
 #include "displayapp/screens/Screen.h"
 #include "displayapp/screens/Symbols.h"
-#include "displayapp/screens/CheckboxList.h"
-#include "displayapp/screens/WatchFaceInfineat.h"
-#include "displayapp/screens/WatchFaceCasioStyleG7710.h"
 
 namespace Pinetime {
 
@@ -22,13 +19,12 @@ namespace Pinetime {
         struct Item {
           const char* name;
           WatchFace watchface;
-          bool enabled;
+          bool available;
         };
 
         SettingWatchFace(DisplayApp* app,
                          std::array<Item, UserWatchFaceTypes::Count>&& watchfaceItems,
-                         Pinetime::Controllers::Settings& settingsController,
-                         Pinetime::Controllers::FS& filesystem);
+                         Pinetime::Controllers::Settings& settingsController);
         ~SettingWatchFace() override;
 
         bool OnTouchEvent(TouchEvents event) override;
@@ -42,7 +38,6 @@ namespace Pinetime {
         static constexpr int nScreens = UserWatchFaceTypes::Count > 0 ? (UserWatchFaceTypes ::Count - 1) / settingsPerScreen + 1 : 1;
 
         Controllers::Settings& settingsController;
-        Pinetime::Controllers::FS& filesystem;
 
         static constexpr const char* title = "Watch face";
         static constexpr const char* symbol = Symbols::home;

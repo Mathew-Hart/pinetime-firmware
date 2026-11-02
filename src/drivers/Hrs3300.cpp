@@ -17,6 +17,7 @@ using namespace Pinetime::Drivers;
 
 namespace {
   static constexpr uint8_t ledDriveCurrentValue = 0x2f;
+  static constexpr uint8_t standbyEnableValue = 0x50;
 }
 
 /** Driver for the HRS3300 heart rate sensor.
@@ -34,7 +35,7 @@ void Hrs3300::Init() {
   vTaskDelay(100);
 
   // HRS disabled, 50ms wait time between ADC conversion period, current 12.5mA
-  WriteRegister(static_cast<uint8_t>(Registers::Enable), 0x50);
+  WriteRegister(static_cast<uint8_t>(Registers::Enable), standbyEnableValue);
 
   // Current 12.5mA and low nibble 0xF.
   // Note: Setting low nibble to 0x8 per the datasheet results in
@@ -50,25 +51,34 @@ void Hrs3300::Init() {
   WriteRegister(static_cast<uint8_t>(Registers::Hgain), 0x00);
 }
 
-void Hrs3300::Enable() {
+bool Hrs3300::Enable() {
   NRF_LOG_INFO("ENABLE");
   auto value = ReadRegister(static_cast<uint8_t>(Registers::Enable));
-  value |= 0x80;
-  WriteRegister(static_cast<uint8_t>(Registers::Enable), value);
-
-  WriteRegister(static_cast<uint8_t>(Registers::PDriver), ledDriveCurrentValue);
+  if (!value.has_value()) {
+    // Do not enable the LED using an unknown control-register value.
+    return false;
+  }
+  if (!WriteRegister(static_cast<uint8_t>(Registers::Enable), value.value() | 0x80) ||
+      !WriteRegister(static_cast<uint8_t>(Registers::PDriver), ledDriveCurrentValue)) {
+    // A failed transaction may have partially reached the chip. Attempt to
+    // leave it in standby, and never claim the acquisition started.
+    Disable();
+    return false;
+  }
+  return true;
 }
 
 void Hrs3300::Disable() {
   NRF_LOG_INFO("DISABLE");
   auto value = ReadRegister(static_cast<uint8_t>(Registers::Enable));
-  value &= ~0x80;
-  WriteRegister(static_cast<uint8_t>(Registers::Enable), value);
+  // A failed read must still attempt to turn the sensor and its LED off. The
+  // fallback is the same known standby configuration used during Init().
+  WriteRegister(static_cast<uint8_t>(Registers::Enable), value.value_or(standbyEnableValue) & ~0x80);
 
   WriteRegister(static_cast<uint8_t>(Registers::PDriver), 0);
 }
 
-Hrs3300::PackedHrsAls Hrs3300::ReadHrsAls() {
+std::optional<Hrs3300::PackedHrsAls> Hrs3300::ReadHrsAls() {
   constexpr Registers dataRegisters[] =
     {Registers::C1dataM, Registers::C0DataM, Registers::C0DataH, Registers::C1dataH, Registers::C1dataL, Registers::C0dataL};
   // Calculate smallest register address
@@ -77,11 +87,12 @@ Hrs3300::PackedHrsAls Hrs3300::ReadHrsAls() {
   // Add one to largest relative index to find the length
   constexpr uint8_t length = static_cast<uint8_t>(*std::max_element(std::begin(dataRegisters), std::end(dataRegisters))) - baseOffset + 1;
 
-  Hrs3300::PackedHrsAls res;
-  uint8_t buf[length];
+  Hrs3300::PackedHrsAls res {};
+  uint8_t buf[length] {};
   auto ret = twiMaster.Read(twiAddress, baseOffset, buf, length);
   if (ret != TwiMaster::ErrorCodes::NoError) {
     NRF_LOG_INFO("READ ERROR");
+    return std::nullopt;
   }
   // hrs
   uint8_t m = static_cast<uint8_t>(Registers::C0DataM) - baseOffset;
@@ -101,16 +112,21 @@ Hrs3300::PackedHrsAls Hrs3300::ReadHrsAls() {
   return res;
 }
 
-void Hrs3300::WriteRegister(uint8_t reg, uint8_t data) {
+bool Hrs3300::WriteRegister(uint8_t reg, uint8_t data) {
   auto ret = twiMaster.Write(twiAddress, reg, &data, 1);
-  if (ret != TwiMaster::ErrorCodes::NoError)
+  if (ret != TwiMaster::ErrorCodes::NoError) {
     NRF_LOG_INFO("WRITE ERROR");
+    return false;
+  }
+  return true;
 }
 
-uint8_t Hrs3300::ReadRegister(uint8_t reg) {
-  uint8_t value;
+std::optional<uint8_t> Hrs3300::ReadRegister(uint8_t reg) {
+  uint8_t value = 0;
   auto ret = twiMaster.Read(twiAddress, reg, &value, 1);
-  if (ret != TwiMaster::ErrorCodes::NoError)
+  if (ret != TwiMaster::ErrorCodes::NoError) {
     NRF_LOG_INFO("READ ERROR");
+    return std::nullopt;
+  }
   return value;
 }

@@ -19,6 +19,7 @@
 #include "components/ble/ImmediateAlertService.h"
 #include "components/ble/MusicService.h"
 #include "components/ble/NavigationService.h"
+#include "components/ble/GpsService.h"
 #include "components/ble/ServiceDiscovery.h"
 #include "components/ble/MotionService.h"
 #include "components/ble/SimpleWeatherService.h"
@@ -63,6 +64,10 @@ namespace Pinetime {
         return navService;
       };
 
+      Pinetime::Controllers::GpsService& gps() {
+        return gpsService;
+      };
+
       Pinetime::Controllers::AlertNotificationService& alertService() {
         return anService;
       };
@@ -101,6 +106,7 @@ namespace Pinetime {
       MusicService musicService;
       SimpleWeatherService weatherService;
       NavigationService navService;
+      GpsService gpsService;
       BatteryInformationService batteryInformationService;
       ImmediateAlertService immediateAlertService;
       HeartRateService heartRateService;

@@ -1,11 +1,14 @@
 #pragma once
 
 #include "displayapp/screens/Screen.h"
+#include "displayapp/apps/Apps.h"
+#include "displayapp/Controllers.h"
 #include "components/motor/MotorController.h"
 #include "systemtask/SystemTask.h"
 #include "systemtask/WakeLock.h"
 #include "displayapp/LittleVgl.h"
 #include "displayapp/widgets/Counter.h"
+#include "displayapp/TimerEditorState.h"
 #include "utility/DirtyValue.h"
 #include <lvgl/lvgl.h>
 
@@ -16,7 +19,10 @@ namespace Pinetime::Applications {
   namespace Screens {
     class Timer : public Screen {
     public:
-      Timer(Controllers::Timer& timerController, Controllers::MotorController& motorController, System::SystemTask& systemTask);
+      Timer(Controllers::Timer& timerController,
+            Controllers::MotorController& motorController,
+            System::SystemTask& systemTask,
+            TimerEditorState* editorState = nullptr);
       ~Timer() override;
       void Refresh() override;
       void Reset();
@@ -32,6 +38,7 @@ namespace Pinetime::Applications {
       void DisplayTime();
       Pinetime::Controllers::Timer& timer;
       Pinetime::Controllers::MotorController& motorController;
+      TimerEditorState* editorState;
 
       Pinetime::System::WakeLock wakeLock;
 

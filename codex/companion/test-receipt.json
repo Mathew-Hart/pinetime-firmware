@@ -1,0 +1,51 @@
+{
+  "status": "PUBLIC_SOURCE_PREPARED_AND_TESTED",
+  "result": "PASS",
+  "tests_run": 38,
+  "existing_behavior_tests": 30,
+  "configuration_tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "python_compile": "PASS",
+  "test_command": "python3 -m unittest -v test_gps_bridge.py",
+  "files_sha256": {
+    ".gitignore": "00866811ee24955d26c2c3673613ad6136cf9c917f0599e4229dcf150fb9d09f",
+    "gps_bridge.py": "531162bc6adf9aef872f6709ea3a60ad4e707427f2fc0168866b11911d41b7f4",
+    "test_gps_bridge.py": "fdfce97e72e292e4488245d30f871ab4e0280aa2003f3366022e2d4cbf95c2ae",
+    "pinetime-gps-bridge.service": "9ce1117ee83aa38a6b9468c45866148a54bccf1cb410dc3c6df96a4a7a2023f2",
+    "README.md": "b85ebffeb209fe041251276b6dc8a1f4b87532f598c632960ffbfe5cfe7a0e16",
+    "protocol.md": "aa9c4409c319e539cec161bb3ba45a2544df8581b8be211808ff0603844a2171",
+    "protocol-fixtures.json": "48516344ac26b46b2d2ea165f3493e1f13a4dc1f44617dc7faad8887151b6661"
+  },
+  "configuration": {
+    "device_address_required": true,
+    "options": [
+      "--address",
+      "PINETIME_ADDRESS"
+    ],
+    "missing_or_invalid_address_exit_status": 2,
+    "validated_before_bus_initialization": true,
+    "test_device_addresses_synthetic": true
+  },
+  "protocol": {
+    "version": 1,
+    "bytes": 20,
+    "service_uuid": "00060000-78fc-48fe-8e23-433b3a1942d0",
+    "characteristic_uuid": "00060001-78fc-48fe-8e23-433b3a1942d0",
+    "golden_hex": "01031f080c00020088aa4816a8793bb70c005a00",
+    "synthetic_fixture_cases": 6,
+    "fresh_seconds": 30
+  },
+  "passive_source": "already-running ModemManager; already-enabled GPS_RAW/GPS_NMEA only",
+  "source_side_effects": [],
+  "dbus_flags": "NO_AUTO_START; no ALLOW_INTERACTIVE_AUTHORIZATION",
+  "privacy": "No coordinates, altitude, NMEA, payload or location hash in runtime log/status output; mode0600 status file",
+  "limitations": [
+    "Runtime tests use synthetic reports and fake buses; no phone or live GNSS calls.",
+    "ModemManager GSA/GSV values may be independently cached; displayed as reported data.",
+    "Real phone/watch behavior needs separate hardware validation."
+  ],
+  "installed": false,
+  "published_by_test": false,
+  "phone_actions": []
+}

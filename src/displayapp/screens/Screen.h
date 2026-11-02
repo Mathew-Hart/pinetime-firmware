@@ -19,6 +19,12 @@ namespace Pinetime {
 
         virtual ~Screen() = default;
 
+        // The current screen is displayed in normal and always-on mode, but not
+        // while the panel is off. Called before replacement as well as on power
+        // transitions; screens must tolerate repeated false notifications.
+        virtual void OnDisplayStateChanged(bool /*displayed*/) {
+        }
+
         static void RefreshTaskCallback(lv_task_t* task);
 
         bool IsRunning() const {
