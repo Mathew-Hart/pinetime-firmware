@@ -1,111 +1,43 @@
-<div align="center">
+# PineTime firmware
 
-![Header Image](doc/logo/watchface_collage.png)
+Personal firmware for my PINE64 PineTime, developed for use with a Linux PinePhone. This project is a place for custom watch faces, simpler apps and experiments tailored to my own watch.
 
-<br>
+This is an **independently maintained derivative of [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime)**. The repository is standalone, and these changes are not intended for upstream integration. Future InfiniTime fixes may be incorporated selectively; updates are not imported automatically.
 
-[![GitHub tag](https://img.shields.io/github/tag/InfiniTimeOrg/InfiniTime?include_prereleases=&sort=semver&color=blue)](https://github.com/InfiniTimeOrg/InfiniTime/releases)
-[![GitHub License](https://img.shields.io/github/license/InfiniTimeOrg/InfiniTime)](https://github.com/InfiniTimeOrg/InfiniLink/blob/main/LICENSE)
-[![Issues - InfiniTime](https://img.shields.io/github/issues/InfiniTimeOrg/InfiniTime)](https://github.com/InfiniTimeOrg/InfiniTime/issues)
-[![Pull Requests - InfiniTime](https://img.shields.io/github/issues-pr/InfiniTimeOrg/InfiniTime)](https://github.com/InfiniTimeOrg/InfiniTime/pulls)
-[![Downloads - InfiniTime](https://img.shields.io/github/downloads/InfiniTimeOrg/InfiniTime/total)](https://github.com/InfiniTimeOrg/InfiniTime)
-[![Stars - InfiniTime](https://img.shields.io/github/stars/InfiniTimeOrg/InfiniTime?style=social)](https://github.com/InfiniTimeOrg/InfiniTime/stargazers)
-[![Forks - InfiniTime](https://img.shields.io/github/forks/InfiniTimeOrg/InfiniTime?style=social)](https://github.com/InfiniTimeOrg/InfiniTime/network/members)
+## Where the custom firmware lives
 
-# InfiniTime
+**The development firmware is on [`codex/wf4-draft`](https://github.com/Mathew-Hart/pinetime-firmware/tree/codex/wf4-draft).** This default `main` branch provides the project overview over a preserved upstream source snapshot. Build the draft branch to get the custom firmware.
 
-*Fast open-source firmware for the [PineTime smartwatch](https://pine64.org/devices/pinetime/) with many features, written in modern C++.*
+The current draft is **1.16.1-wf4**, based on InfiniTime 1.16.1 at commit `e172b9b3c447e2b79c45510c751855a090a208b4`.
 
-<br>
+## What is different
 
-</div>
+- **Custom watch faces:** Weather focus with Paris and Tokyo clocks and an alarm indicator; Elegant with two hands and tick marks; Binary; Earth with day/night shading; Solar; and a phone GPS readout. Digital, Analog and Terminal are also included, for nine faces in total.
+- **A selectable face cycle:** check the faces to include in Settings, then swipe right to left to cycle through them.
+- **Analog complications:** weather temperature with a shortcut to Weather, plus heart rate sampled every ten minutes while the face is visible.
+- **Clock Tools:** Alarm, Timer and Stopwatch combined in one app.
+- **A simpler app profile:** games, Paint and Steps are removed. Motion-based wake controls and shake calibration are removed for the development watch, whose accelerometer is unavailable. An I²C diagnostic app helps investigate that sensor.
+- **An optional Linux GPS companion:** forwards reports from an already-enabled phone GNSS source to the watch. PineTime has no GPS receiver of its own.
 
-## New to InfiniTime?
+Weather, navigation and notification forwarding depend on separate phone integrations. This repository currently bundles only the optional GPS companion; cloning it does not install the rest of the PinePhone setup.
 
-- [Getting started with InfiniTime](doc/gettingStarted/gettingStarted-1.0.md)
-- [Updating the software](doc/gettingStarted/updating-software.md)
-- [About the firmware and bootloader](doc/gettingStarted/about-software.md)
-- [Available apps](doc/gettingStarted/Applications.md)
-- [Available watch faces](/doc/gettingStarted/Watchfaces.md)
-- [PineTimeStyle Watch face](https://pine64.org/documentation/PineTime/Watchfaces/PineTimeStyle)
-  - [Weather integration](https://pine64.org/documentation/PineTime/Software/InfiniTime_weather/)
+## Current status
 
-### Companion apps
+**This is a development draft.** The latest GPS draft has been compiled and tested locally, but has not been installed on a watch. Its GPS companion has not been installed, and live phone-to-watch GPS remains unverified. Preview coordinates are synthetic test values.
 
-- [Gadgetbridge](https://gadgetbridge.org/) (Android)
-- [Amazfish](https://github.com/piggz/harbour-amazfish/) ([SailfishOS](https://sailfishos-chum.github.io/apps/harbour-amazfish/), [Ubuntu Touch](https://open-store.io/app/uk.co.piggz.amazfish), [Flatpak](https://flathub.org/apps/uk.co.piggz.amazfish))
-- [Siglo](https://github.com/alexr4535/siglo) (Linux)
-- [InfiniLink](https://github.com/InfiniTimeOrg/InfiniLink) (iOS)
-- [ITD](https://gitea.elara.ws/Elara6331/itd) (Linux)
-- [WatchMate](https://github.com/azymohliad/watchmate) (Linux)
-- [InfiniTimeExplorer](https://infinitimeexplorer.netlify.app) (Web)
+Recorded checks passed: the ARM application build, 2,633 native assertions, 38 companion tests and six protocol interoperability cases. These checks do not establish live hardware behavior.
 
-<br>
+See the draft's [full documentation, previews, build instructions and test results](https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/README.md), [GPS companion guide](https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/codex/companion/README.md), and [recorded application-only DFU package](https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/codex/artifacts/pinetime-wf4-gps-draft-dfu.zip).
 
-> *InfiniTimeExplorer is only compatible with web browsers that support Web BLE. Current fully supported browsers include Chrome and Microsoft Edge.* 
->
-> *We removed mentions to NRFConnect as this app is closed source and recent versions do not work anymore with InfiniTime (the last version known to work is 4.24.3). If you used NRFConnect in the past, we recommend you switch to [Gadgetbridge](https://gadgetbridge.org/).* 
+To work on the custom draft:
 
-## Development
+```sh
+git clone --branch codex/wf4-draft --recurse-submodules https://github.com/Mathew-Hart/pinetime-firmware.git
+cd pinetime-firmware
+```
 
-- [InfiniTime Vision](doc/InfiniTimeVision.md)
-- [Rough structure of the code](doc/code/Intro.md)
-- [How to implement an application](doc/code/Apps.md)
-- [Generate the fonts and symbols](src/displayapp/fonts/README.md)
-- [Tips on designing an app UI](doc/ui_guidelines.md)
-- [Bootloader, OTA and DFU](bootloader/README.md)
-- [External resources](doc/ExternalResources.md)
+Follow the draft's build instructions after cloning. Nothing is installed on a phone or watch automatically.
 
-### Contributing
+## Origin and license
 
-- [How to contribute](CONTRIBUTING.md)
-- [Coding conventions](doc/coding-convention.md)
-
-### Build, flash and debug
-
-- [InfiniTime simulator](https://github.com/InfiniTimeOrg/InfiniSim)
-- [Build the project](doc/buildAndProgram.md)
-- [Build the project with Docker](doc/buildWithDocker.md)
-- [Build the project with VSCode](doc/buildWithVScode.md)
-- [Flash the firmware using OpenOCD and STLinkV2](doc/openOCD.md)
-- [Flash the firmware using SWD interface](doc/SWD.md)
-- [Flash the firmware using JLink](doc/jlink.md)
-- [Flash the firmware using GDB](doc/gdb.md)
-- [Stub using NRF52-DK](doc/PinetimeStubWithNrf52DK.md)
-
-### API
-
-- [BLE implementation and API](doc/ble.md)
-
-### Architecture and technical topics
-
-- [Memory analysis](doc/MemoryAnalysis.md)
-
-### Project management
-
-- [Maintainer's guide](doc/maintainer-guide.md)
-- [Versioning](doc/versioning.md)
-- [Project branches](doc/branches.md)
-- [Files included in the release notes](doc/filesInReleaseNotes.md)
-- [Files needed by the factory](doc/files-needed-by-factory.md)
-
-## Licenses
-
-This project is released under the GNU General Public License version 3 or, at your option, any later version.
-
-It integrates the following projects:
-
-- RTOS: **[FreeRTOS](https://freertos.org)** under the MIT license
-- UI: **[LittleVGL/LVGL](https://lvgl.io/)** under the MIT license
-- BLE stack: **[NimBLE](https://github.com/apache/mynewt-nimble)** under the Apache 2.0 license
-- Font: **[Jetbrains Mono](https://www.jetbrains.com/fr-fr/lp/mono/)** under the Apache 2.0 license
-
-## Credits
-
-I’m not working alone on this project. First, many people create pull requests for this project. Then, there is the whole #pinetime community: a lot of people all around the world who are hacking, searching, experimenting and programming the Pinetime. We exchange our ideas, experiments and code in the chat rooms and forums.
-
-Here are some people I would like to highlight:
-
-- [Atc1441](https://github.com/atc1441/): He works on an Arduino based firmware for the Pinetime and many other smartwatches based on similar hardware. He was of great help when I was implementing support for the BMA421 motion sensor and I²C driver.
-- [Koen](https://github.com/bosmoment): He’s working on a firmware based on RiotOS. He integrated similar libs as me: NimBLE, LittleVGL,… His help was invaluable too!
-- [Lup Yuen Lee](https://github.com/lupyuen): He is everywhere: he works on a Rust firmware, builds a MCUBoot based bootloader for the Pinetime, designs a Flutter based companion app for smartphones and writes a lot of articles about the Pinetime!
+The firmware is derived from [InfiniTime](https://github.com/InfiniTimeOrg/InfiniTime), with its Git history and copyright notices retained. InfiniTime and these firmware modifications are distributed under [GPL-3.0-or-later](LICENSE). Dependencies, fonts and imagery retain their respective licenses and credits, documented in the [draft's attribution section](https://github.com/Mathew-Hart/pinetime-firmware/blob/codex/wf4-draft/README.md#license-and-attribution).
